@@ -2,9 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:planning_poker/models/room.dart';
 
 class RoomPage extends StatefulWidget {
-  final Room room;
+  static String createRoute(String roomId) {
+    return 'rooms/$roomId';
+  }
 
-  RoomPage({Key? key, required this.room}) : super(key: key);
+  static bool isMatchingPath(String path) {
+    var uri = Uri.parse(path);
+    return uri.pathSegments.length == 2 && uri.pathSegments[0] == 'rooms';
+  }
+
+  static String? parseRoomId(String path) {
+    var uri = Uri.parse(path);
+    return uri.pathSegments[1];
+  }
+
+  final String roomId;
+
+  RoomPage({Key? key, required this.roomId}) : super(key: key);
 
   @override
   _RoomPageState createState() => _RoomPageState();
@@ -15,7 +29,7 @@ class _RoomPageState extends State<RoomPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Room ' + widget.room.getRoomId()),
+        title: Text('Room ' + widget.roomId),
       ),
       body: Center(
         child: Column(

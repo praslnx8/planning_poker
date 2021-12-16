@@ -1,3 +1,4 @@
+import 'package:planning_poker/adapters/room_adapter.dart';
 import 'package:planning_poker/models/room.dart';
 
 typedef RoomCreatedCallback = void Function(Room room);
@@ -18,10 +19,13 @@ class System {
       {required RoomCreateProcessingCallback onProcessing,
       required RoomCreatedCallback onRoomCreated,
       required RoomCreateFailedCallback onRoomCreateFailed}) {
-    onProcessing.call();
-
-    final room = Room.init();
-    //TODO call adapter to set room
-    onRoomCreated.call(room);
+    onProcessing();
+    final roomId = RoomAdapter.instance.createRoom();
+    if (roomId != null) {
+      final room = Room.init(roomId);
+      onRoomCreated(room);
+    } else {
+      onRoomCreateFailed('error');
+    }
   }
 }

@@ -1,24 +1,31 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:planning_poker/models/system.dart';
-import 'package:planning_poker/ui/landing.page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
-  runApp(PlanningPokerApp(System()));
+import 'app_router.dart';
+import 'firebase_options.dart';
+
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(PlanningPokerApp());
 }
 
 class PlanningPokerApp extends StatelessWidget {
-  final System _system;
-
-  PlanningPokerApp(this._system);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Planning Poker',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LandingPage(system: this._system),
-    );
+        title: 'Planning Poker',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        onGenerateRoute: (settings) => MaterialPageRoute(
+            settings: RouteSettings(name: settings.name, arguments: settings.arguments),
+            maintainState: true,
+            builder: (context) => AppRouter.route(settings.name!)));
   }
 }
