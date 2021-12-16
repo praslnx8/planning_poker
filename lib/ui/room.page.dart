@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:planning_poker/models/room.dart';
-import 'package:planning_poker/models/system.dart';
 
 class RoomPage extends StatefulWidget {
   final Room room;
@@ -12,12 +11,11 @@ class RoomPage extends StatefulWidget {
 }
 
 class _RoomPageState extends State<RoomPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Planning Poker'),
+        title: Text('Room ' + widget.room.getRoomId()),
       ),
       body: Center(
         child: Column(

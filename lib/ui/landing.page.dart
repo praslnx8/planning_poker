@@ -11,6 +11,7 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+
   void _joinRoom(String roomNo) {
     setState(() {
       widget.system

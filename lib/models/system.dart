@@ -18,6 +18,8 @@ class System {
       {required RoomCreateProcessingCallback onProcessing,
       required RoomCreatedCallback onRoomCreated,
       required RoomCreateFailedCallback onRoomCreateFailed}) {
+    onProcessing.call();
+
     final room = Room.init();
     //TODO call adapter to set room
     onRoomCreated.call(room);
