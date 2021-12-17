@@ -1,4 +1,5 @@
 import 'package:planning_poker/models/estimate.dart';
+import 'package:planning_poker/models/player.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -6,15 +7,29 @@ void main() {
     final json = {
       'id': '1',
       'pokerValues': [
-        {'playerId': 'p1', 'value': 1}
+        {
+          'player': {'id': 'p1'},
+          'value': 1
+        }
       ]
     };
 
     Estimate actual = Estimate.fromJson(json);
 
-    Map<String, int> pokerValueMap = Map.identity();
-    pokerValueMap['p1'] = 1;
+    Map<Player, int> pokerValueMap = Map.identity();
+    pokerValueMap[Player('p1')] = 1;
     Estimate expected = Estimate('1', pokerValueMap);
+    expect(actual.toJson(), expected.toJson());
+  });
+
+  test('should load Estimate from json When pokerValues are null', () {
+    final json = {
+      'id': '1'
+    };
+
+    Estimate actual = Estimate.fromJson(json);
+
+    Estimate expected = Estimate.init('1');
     expect(actual.toJson(), expected.toJson());
   });
 }

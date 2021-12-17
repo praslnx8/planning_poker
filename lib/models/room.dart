@@ -17,8 +17,9 @@ class Room {
   Room(this._id, this._facilitator, this._estimates, this._players);
 
   Future<void> joinRoom(User user) async {
-    this._players.add(Player(user.id));
-    return RoomAdapter.instance.syncRoom(this);
+    final player = Player(user.id);
+    this._players.add(player);
+    return RoomAdapter.instance.addPlayer(id, player);
   }
 
   String get id => _id;
