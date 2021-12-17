@@ -58,4 +58,9 @@ class RoomAdapter {
       return Transaction.success(_room);
     });
   }
+
+  Stream<Room> listenToRoomUpdates(String roomNo) {
+    DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
+    return roomRef.onValue.map((event) => Room.fromJson(event.snapshot.value as Map<String, dynamic>));
+  }
 }

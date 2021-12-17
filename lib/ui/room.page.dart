@@ -31,7 +31,7 @@ class _RoomPageState extends State<RoomPage> {
   dynamic _error;
   Room? _room;
 
-  void setRoom(Room room) {
+  void _setRoom(Room room) {
     setState(() {
       _loading = false;
       _room = room;
@@ -39,7 +39,7 @@ class _RoomPageState extends State<RoomPage> {
     });
   }
 
-  void setLoading() {
+  void _setLoading() {
     setState(() {
       _loading = true;
       _room = null;
@@ -47,7 +47,7 @@ class _RoomPageState extends State<RoomPage> {
     });
   }
 
-  void setError(error) {
+  void _setError(error) {
     setState(() {
       _loading = false;
       _room = null;
@@ -58,8 +58,11 @@ class _RoomPageState extends State<RoomPage> {
   @override
   void initState() {
     super.initState();
-    setLoading();
-    System.instance.joinRoom(widget.roomId).then((room) => {setRoom(room)}, onError: (error) => {setError(error)});
+    _setLoading();
+    System.instance.joinRoom(widget.roomId).then((room) => {_setRoom(room)}, onError: (error) => {_setError(error)});
+    System.instance.listenToRoomUpdates(widget.roomId).listen((room) {
+      _setRoom(room);
+    });
   }
 
   @override
@@ -78,9 +81,9 @@ class _RoomPageState extends State<RoomPage> {
   }
 
   Widget _getContent() {
-    if (_loading) {
-      return CircularProgressIndicator();
+    if (_room != null) {
+      return Text('Room page');
     }
-    return Text('Room page');
+    return CircularProgressIndicator();
   }
 }

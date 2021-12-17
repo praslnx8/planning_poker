@@ -36,6 +36,10 @@ class System {
     }
   }
 
+  Stream<Room> listenToRoomUpdates(String roomNo) {
+    return RoomAdapter.instance.listenToRoomUpdates(roomNo);
+  }
+
   Future<Room> createRoom() async {
     if (_user != null) {
       final roomId = await RoomAdapter.instance.getRoomId();
