@@ -1,3 +1,4 @@
+import 'package:planning_poker/adapters/room_adapter.dart';
 import 'package:planning_poker/models/estimate.dart';
 import 'package:planning_poker/models/facilitator.dart';
 import 'package:planning_poker/models/player.dart';
@@ -15,9 +16,9 @@ class Room {
 
   Room(this._id, this._facilitator, this._estimates, this._players);
 
-  void joinRoom(User user) {
+  Future<void> joinRoom(User user) async {
     this._players.add(Player(user.id));
-    //TODO call adapter to sync
+    return RoomAdapter.instance.syncRoom(this);
   }
 
   String get id => _id;

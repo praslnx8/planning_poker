@@ -25,8 +25,15 @@ class System {
     UserAdapter.instance.login().then((uid) => {_user = User(uid)});
   }
 
-  Future<Room> joinRoom(String roomNo) {
-    return RoomAdapter.instance.getRoom(roomNo);
+  Future<Room> joinRoom(String roomNo) async {
+    final room = await RoomAdapter.instance.getRoom(roomNo);
+
+    if (_user != null) {
+      await room.joinRoom(_user!);
+      return Future.value(room);
+    } else {
+      return Future.error('User not available');
+    }
   }
 
   Future<Room> createRoom() async {
@@ -40,6 +47,4 @@ class System {
       return Future.error('User not found');
     }
   }
-
-  void getRoom(String roomId) {}
 }
