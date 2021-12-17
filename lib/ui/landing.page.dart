@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:planning_poker/models/room.dart';
 import 'package:planning_poker/models/system.dart';
 import 'package:planning_poker/ui/room.page.dart';
+import 'package:planning_poker/utils/dialog_utils.dart';
 
 class LandingPage extends StatefulWidget {
-  final System system;
-
-  LandingPage({Key? key, required this.system}) : super(key: key);
+  LandingPage({Key? key}) : super(key: key);
 
   @override
   _LandingPageState createState() => _LandingPageState();
@@ -14,21 +13,24 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   bool _loading = false;
-  bool _error = false;
+  String? _error;
   Room? _room;
+
+  final _formKey = GlobalKey<FormState>();
+  final _roomNoFieldController = TextEditingController();
 
   void _setLoading() {
     setState(() {
       _loading = true;
-      _error = false;
+      _error = null;
       _room = null;
     });
   }
 
-  void _setError() {
+  void _setError(String error) {
     setState(() {
       _loading = false;
-      _error = true;
+      _error = error;
       _room = null;
     });
   }
@@ -36,19 +38,19 @@ class _LandingPageState extends State<LandingPage> {
   void _setRoom(Room room) {
     setState(() {
       _loading = false;
-      _error = false;
+      _error = null;
       _room = room;
     });
   }
 
   void _createRoom() {
     _setLoading();
-    widget.system.createRoom().then((room) => _setRoom(room), onError: (error) => _setError());
+    System.instance.createRoom().then((room) => _setRoom(room), onError: (error) => _setError(error.toString()));
   }
 
   void _joinRoom(String roomNo) {
     _setLoading();
-    widget.system.joinRoom(roomNo).then((room) => {_setRoom(room)});
+    System.instance.joinRoom(roomNo).then((room) => {_setRoom(room)}, onError: (error) => _setError(error));
   }
 
   @override
@@ -58,52 +60,77 @@ class _LandingPageState extends State<LandingPage> {
         Navigator.of(context).pushNamed(RoomPage.createRoute(_room!.id));
       });
     }
+    if (_error != null) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        DialogUtils.instance.showErrorDialog(context, _error!);
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Planning Poker'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  width: 240,
-                  child: TextFormField(
-                    initialValue: '',
-                    maxLength: 5,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.meeting_room),
-                      labelText: 'Enter Room no',
-                    ),
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(12)),
-                ElevatedButton(
-                  onPressed: () => {},
-                  child: Text('Join'),
-                )
-              ],
-            ),
-            Padding(padding: EdgeInsets.all(12)),
-            Text(
-              'or',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Padding(padding: EdgeInsets.all(12)),
-            OutlinedButton.icon(
-              onPressed: () {
-                _createRoom();
-              },
-              icon: Icon(Icons.add),
-              label: Text("Create Room"),
-            ),
-          ],
-        ),
+        child: _getContent(),
       ),
     );
+  }
+
+  Widget _getContent() {
+    if (_loading) {
+      return CircularProgressIndicator();
+    } else {
+      return Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 240,
+                    child: TextFormField(
+                      controller: _roomNoFieldController,
+                      maxLength: 5,
+                      validator: (value) {
+                        if (value?.isEmpty == true) {
+                          return 'Enter Room no';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.meeting_room),
+                        labelText: 'Enter Room no',
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(12)),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _joinRoom(_roomNoFieldController.value.text);
+                      }
+                    },
+                    child: Text('Join'),
+                  )
+                ],
+              ),
+              Padding(padding: EdgeInsets.all(12)),
+              Text(
+                'or',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Padding(padding: EdgeInsets.all(12)),
+              OutlinedButton.icon(
+                onPressed: () {
+                  _createRoom();
+                },
+                icon: Icon(Icons.add),
+                label: Text("Create Room"),
+              ),
+            ],
+          ));
+    }
   }
 }

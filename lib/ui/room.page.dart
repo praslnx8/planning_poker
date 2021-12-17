@@ -30,10 +30,14 @@ class _RoomPageState extends State<RoomPage> {
   bool _error = false;
   Room? _room;
 
+
+  @override
+  void initState() {
+    System.instance.getRoom(widget.roomId);
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    System.instance.getRoom(widget.roomId);
 
     return Scaffold(
       appBar: AppBar(
