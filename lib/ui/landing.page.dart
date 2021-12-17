@@ -17,13 +17,6 @@ class _LandingPageState extends State<LandingPage> {
   bool _error = false;
   Room? _room;
 
-  void _joinRoom(String roomNo) {
-    widget.system.joinRoom(roomNo,
-        onProcessing: () => {_setLoading()},
-        onRoomJoined: (room) => {_setRoom(room)},
-        onRoomJoinFailed: (error) => {_setError()});
-  }
-
   void _setLoading() {
     setState(() {
       _loading = true;
@@ -49,16 +42,20 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void _createRoom() {
-    widget.system.createRoom(
-        onProcessing: () => {_setLoading()},
-        onRoomCreated: (room) => {_setRoom(room)},
-        onRoomCreateFailed: (error) => {_setError()});  }
+    _setLoading();
+    widget.system.createRoom().then((room) => _setRoom(room), onError: (error) => _setError());
+  }
+
+  void _joinRoom(String roomNo) {
+    _setLoading();
+    widget.system.joinRoom(roomNo).then((room) => {_setRoom(room)});
+  }
 
   @override
   Widget build(BuildContext context) {
     if (_room != null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        Navigator.of(context).pushNamed(RoomPage.createRoute(_room!.getRoomId()));
+        Navigator.of(context).pushNamed(RoomPage.createRoute(_room!.id));
       });
     }
     return Scaffold(

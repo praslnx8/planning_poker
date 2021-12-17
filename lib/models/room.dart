@@ -21,7 +21,7 @@ class Room {
     //TODO call adapter to sync
   }
 
-  String getRoomId() => _id;
+  String get id => _id;
 
   Estimate startEstimate() {
     final estimate = Estimate.init(_estimates.length);

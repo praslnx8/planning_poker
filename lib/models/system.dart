@@ -25,28 +25,21 @@ class System {
     UserAdapter.instance.login().then((uid) => {_user = User(uid)});
   }
 
-  void joinRoom(String roomNo,
-      {required RoomJoinProcessingCallback onProcessing,
-      required RoomJoinedCallback onRoomJoined,
-      required RoomJoinFailedCallback onRoomJoinFailed}) {}
+  Future<Room> joinRoom(String roomNo) {
+    return Future.error('Not Implemented');
+  }
 
-  void createRoom(
-      {required RoomCreateProcessingCallback onProcessing,
-      required RoomCreatedCallback onRoomCreated,
-      required RoomCreateFailedCallback onRoomCreateFailed}) async {
-    onProcessing();
-
+  Future<Room> createRoom() async {
     if (_user != null) {
-      RoomAdapter.instance.getRoomId().then((roomId) async {
-        final Facilitator facilitator = Facilitator(_user!.id);
-        final Room room = Room.init(roomId, facilitator);
-        await RoomAdapter.instance.createRoom(room);
-        onRoomCreated(room);
-      }).onError((error, stackTrace) {
-        onRoomCreateFailed('error');
-      });
+      final roomId = await RoomAdapter.instance.getRoomId();
+      final Facilitator facilitator = Facilitator(_user!.id);
+      final Room room = Room.init(roomId, facilitator);
+      await RoomAdapter.instance.createRoom(room);
+      return Future.value(room);
     } else {
-      onRoomCreateFailed('Login failed');
+      return Future.error('User not found');
     }
   }
+
+  void getRoom(String roomId) {}
 }

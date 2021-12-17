@@ -9,8 +9,8 @@ class RoomAdapter {
   RoomAdapter._();
 
   Future<void> createRoom(Room room) {
-    DatabaseReference roomIdPoolRef = FirebaseDatabase.instance.ref("room/" + room.getRoomId());
-    return roomIdPoolRef.set(room);
+    DatabaseReference roomPoolRef = FirebaseDatabase.instance.ref("rooms").child(room.id);
+    return roomPoolRef.set(room.toJson());
   }
 
   Future<String> getRoomId() async {

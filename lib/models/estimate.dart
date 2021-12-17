@@ -1,5 +1,4 @@
 import 'package:planning_poker/models/player.dart';
-import 'package:planning_poker/models/user.dart';
 
 class Estimate {
   final int _id;
@@ -20,8 +19,7 @@ class Estimate {
 
   Estimate.fromJson(Map<String, dynamic> json)
       : _id = json['id'],
-        _pokerValueMap =
-            Map.fromEntries((json['pokerValues'] as List).map((e) => MapEntry(e['playerId'], e['value'])));
+        _pokerValueMap = Map.fromEntries((json['pokerValues'] as List).map((e) => MapEntry(e['playerId'], e['value'])));
 
   Map<String, dynamic> toJson() => {
         'id': _id,
