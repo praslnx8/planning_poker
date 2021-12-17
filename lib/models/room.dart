@@ -6,15 +6,14 @@ import 'package:planning_poker/models/user.dart';
 class Room {
   final String _id;
   final Facilitator _facilitator;
-  final List<Estimate> _estimates = List.empty(growable: true);
-  final Set<Player> _players = Set.identity();
+  final List<Estimate> _estimates;
+  final Set<Player> _players;
 
-  Room.init(this._id, this._facilitator);
+  Room.init(this._id, this._facilitator)
+      : _estimates = List.empty(growable: true),
+        _players = Set.identity();
 
-  Room(this._id, this._facilitator, List<Estimate> estimates, List<Player> players) {
-    this._estimates.addAll(estimates);
-    this._players.addAll(players);
-  }
+  Room(this._id, this._facilitator, this._estimates, this._players);
 
   void joinRoom(User user) {
     this._players.add(Player(user.id));
@@ -24,7 +23,8 @@ class Room {
   String get id => _id;
 
   Estimate startEstimate() {
-    final estimate = Estimate.init(_estimates.length);
+    final estimate = Estimate.init(_estimates.length.toString());
+    _estimates.add(estimate);
     //TODO sync room
     return estimate;
   }
@@ -39,8 +39,20 @@ class Room {
 
   Room.fromJson(Map<String, dynamic> json)
       : _id = json['id'],
-        _facilitator = Facilitator.fromJson(json['name']);
+        _facilitator = Facilitator.fromJson(json['facilitator']),
+        _estimates = json['estimates'] != null
+            ? (json['estimates'] as List)
+                .map((e) => Estimate.fromJson(e as Map<String, dynamic>))
+                .toList(growable: true)
+            : List.empty(growable: true),
+        _players = json['players'] != null
+            ? (json['players'] as List).map((e) => Player.fromJson(e as Map<String, dynamic>)).toSet()
+            : Set.identity();
 
-  Map<String, dynamic> toJson() =>
-      {'id': _id, 'facilitator': _facilitator.toJson(), 'estimates': _estimates.map((estimate) => estimate.toJson())};
+  Map<String, dynamic> toJson() => {
+        'id': _id,
+        'facilitator': _facilitator.toJson(),
+        'estimates': _estimates.map((estimate) => estimate.toJson()),
+        'players': _players.map((player) => player.toJson())
+      };
 }

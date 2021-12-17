@@ -1,7 +1,7 @@
 import 'package:planning_poker/models/player.dart';
 
 class Estimate {
-  final int _id;
+  final String _id;
   final Map<String, int> _pokerValueMap;
 
   Estimate.init(this._id) : _pokerValueMap = Map.identity();

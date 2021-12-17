@@ -26,7 +26,7 @@ class System {
   }
 
   Future<Room> joinRoom(String roomNo) {
-    return Future.error('Not Implemented');
+    return RoomAdapter.instance.getRoom(roomNo);
   }
 
   Future<Room> createRoom() async {
