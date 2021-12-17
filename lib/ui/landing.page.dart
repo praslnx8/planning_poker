@@ -49,10 +49,10 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void _createRoom() {
-    setState(() {
-      widget.system.createRoom(onProcessing: () => {}, onRoomCreated: (room) => {}, onRoomCreateFailed: (error) => {});
-    });
-  }
+    widget.system.createRoom(
+        onProcessing: () => {_setLoading()},
+        onRoomCreated: (room) => {_setRoom(room)},
+        onRoomCreateFailed: (error) => {_setError()});  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,21 +1,30 @@
+import 'package:planning_poker/models/player.dart';
 import 'package:planning_poker/models/user.dart';
 
 class Estimate {
   final int _id;
-  final Map<User, int> _pokerValueMap = Map.identity();
+  final Map<String, int> _pokerValueMap;
 
-  Estimate.init(this._id);
+  Estimate.init(this._id) : _pokerValueMap = Map.identity();
 
-  Estimate(this._id, Map<User, int> pokerValueMap) {
-    this._pokerValueMap.addAll(pokerValueMap);
-  }
+  Estimate(this._id, this._pokerValueMap);
 
-  void addPokerValue(User user, int value) {
-    _pokerValueMap[user] = value;
+  void addPokerValue(Player player, int value) {
+    _pokerValueMap[player.id] = value;
     //TODO call adapter to publish
   }
 
   void listenToPokerValue() {
     //TODO Call adapter to listen
   }
+
+  Estimate.fromJson(Map<String, dynamic> json)
+      : _id = json['id'],
+        _pokerValueMap =
+            Map.fromEntries((json['pokerValues'] as List).map((e) => MapEntry(e['playerId'], e['value'])));
+
+  Map<String, dynamic> toJson() => {
+        'id': _id,
+        'pokerValues': _pokerValueMap.entries.map((e) => {'playerId': e.key, 'value': e.value})
+      };
 }

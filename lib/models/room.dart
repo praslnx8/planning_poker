@@ -1,20 +1,23 @@
 import 'package:planning_poker/models/estimate.dart';
+import 'package:planning_poker/models/facilitator.dart';
+import 'package:planning_poker/models/player.dart';
 import 'package:planning_poker/models/user.dart';
 
 class Room {
   final String _id;
+  final Facilitator _facilitator;
   final List<Estimate> _estimates = List.empty(growable: true);
-  final Set<User> _users = Set.identity();
+  final Set<Player> _players = Set.identity();
 
-  Room.init(this._id);
+  Room.init(this._id, this._facilitator);
 
-  Room(this._id, List<Estimate> estimates, List<User> users) {
+  Room(this._id, this._facilitator, List<Estimate> estimates, List<Player> players) {
     this._estimates.addAll(estimates);
-    this._users.addAll(users);
+    this._players.addAll(players);
   }
 
   void joinRoom(User user) {
-    this._users.add(user);
+    this._players.add(Player(user.id));
     //TODO call adapter to sync
   }
 
@@ -33,4 +36,11 @@ class Room {
   void listenToEstimate() {
     //TODO listen to estimate and broadcast
   }
+
+  Room.fromJson(Map<String, dynamic> json)
+      : _id = json['id'],
+        _facilitator = Facilitator.fromJson(json['name']);
+
+  Map<String, dynamic> toJson() =>
+      {'id': _id, 'facilitator': _facilitator.toJson(), 'estimates': _estimates.map((estimate) => estimate.toJson())};
 }

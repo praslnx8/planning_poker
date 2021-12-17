@@ -40,5 +40,6 @@ class DefaultFirebaseOptions {
     authDomain: dotenv.env['AUTH_DOMAIN']!,
     storageBucket: dotenv.env['STORAGE_BUCKET']!,
     measurementId: dotenv.env['MEASUREMENT_ID']!,
+    databaseURL: dotenv.env['DATABASE_URL']
   );
 }

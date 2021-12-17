@@ -1,5 +1,7 @@
 class User {
-  final String id;
+  final String _id;
 
-  User(this.id);
+  User(this._id);
+
+  String get id => _id;
 }

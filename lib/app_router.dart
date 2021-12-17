@@ -9,6 +9,6 @@ class AppRouter {
       final roomId = RoomPage.parseRoomId(path);
       return RoomPage(roomId: roomId!);
     }
-    return LandingPage(system: System());
+    return LandingPage(system: System.instance);
   }
 }
