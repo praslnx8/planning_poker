@@ -12,14 +12,16 @@ void main() {
           'player': {'id': 'p1'},
           'value': 1
         }
-      ]
+      ],
+      'overRideEstimatedValue': 1,
+      'reveal': false
     };
 
     Estimate actual = Estimate.fromJson(json);
 
     Map<Player, int> pokerValueMap = Map.identity();
     pokerValueMap[Player('p1')] = 1;
-    Estimate expected = Estimate('1', '33', pokerValueMap);
+    Estimate expected = Estimate('1', '33', pokerValueMap, 1);
     expect(actual.toJson(), expected.toJson());
   });
 

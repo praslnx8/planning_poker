@@ -35,8 +35,8 @@ class Room {
     return _estimates.last;
   }
 
-  void listenToEstimate() {
-    //TODO listen to estimate and broadcast
+  int getTotalEstimates() {
+    return _estimates.map((e) => e.getEstimatedValue()).reduce((value, element) => value + element);
   }
 
   Room.fromJson(Map<String, dynamic> json)

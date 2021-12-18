@@ -48,7 +48,7 @@ class Estimate {
                 (json['pokerValues'] as List).map((e) => MapEntry(Player.fromJson(e['player']), e['value'])))
             : Map.identity()),
         _overRideEstimatedValue = json['overRideEstimatedValue'],
-        _reveal = json['reveal'];
+        _reveal = json['reveal'] != null ? json['reveal'] : false;
 
   Map<String, dynamic> toJson() => {
         'id': _id,
