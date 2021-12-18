@@ -6,6 +6,7 @@ class Estimate {
   final String _roomNo;
   final Map<Player, int> _pokerValueMap;
   int? _overRideEstimatedValue;
+  bool _reveal = false;
 
   Estimate.init(this._id, this._roomNo) : _pokerValueMap = Map.identity();
 
@@ -26,6 +27,11 @@ class Estimate {
     return EstimateAdapter.instance.overRideEstimatedValue(_roomNo, _id, value);
   }
 
+  Future<void> reveal() {
+    _reveal = true;
+    return EstimateAdapter.instance.reveal(_roomNo, _id);
+  }
+
   int getEstimatedValue() {
     if (_overRideEstimatedValue != null) {
       return _overRideEstimatedValue!;
@@ -41,12 +47,14 @@ class Estimate {
             ? Map.fromEntries(
                 (json['pokerValues'] as List).map((e) => MapEntry(Player.fromJson(e['player']), e['value'])))
             : Map.identity()),
-        _overRideEstimatedValue = json['overRideEstimatedValue'];
+        _overRideEstimatedValue = json['overRideEstimatedValue'],
+        _reveal = json['reveal'];
 
   Map<String, dynamic> toJson() => {
         'id': _id,
         'roomNo': _roomNo,
         'pokerValues': _pokerValueMap.entries.map((e) => {'player': e.key.toJson(), 'value': e.value}),
-        'overRideEstimatedValue': _overRideEstimatedValue
+        'overRideEstimatedValue': _overRideEstimatedValue,
+        'reveal': _reveal
       };
 }

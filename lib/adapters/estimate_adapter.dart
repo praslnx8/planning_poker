@@ -15,12 +15,11 @@ class EstimateAdapter {
         return Transaction.abort();
       }
       Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      final estimates =
-          (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true)).toSet();
-      final estimate = estimates.firstWhere((element) => element['id'] == estimateId);
-      final pokerValueMap = estimate['_pokerValueMap'] != null ? (estimate['_pokerValueMap'] as Map) : Map.identity();
+      Map<String, dynamic> _estimate = getEstimateFromRoom(_room, estimateId);
+
+      final pokerValueMap = _estimate['_pokerValueMap'] != null ? (_estimate['_pokerValueMap'] as Map) : Map.identity();
       pokerValueMap.putIfAbsent(player.toJson(), () => pokerValue);
-      estimate['pokerValueMap'] = pokerValueMap;
+      _estimate['pokerValueMap'] = pokerValueMap;
 
       return Transaction.success(_room);
     });
@@ -33,12 +32,32 @@ class EstimateAdapter {
         return Transaction.abort();
       }
       Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      final estimates =
-          (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true)).toSet();
-      final estimate = estimates.firstWhere((element) => element['id'] == estimateId);
-      estimate['overRideEstimatedValue'] = value;
+      Map<String, dynamic> _estimate = getEstimateFromRoom(_room, estimateId);
+
+      _estimate['overRideEstimatedValue'] = value;
 
       return Transaction.success(_room);
     });
+  }
+
+  Future<void> reveal(String roomNo, String estimateId) async {
+    DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
+    await roomRef.runTransaction((Object? room) {
+      if (room == null) {
+        return Transaction.abort();
+      }
+      Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
+      Map<String, dynamic> _estimate = getEstimateFromRoom(_room, estimateId);
+
+      _estimate['reveal'] = true;
+
+      return Transaction.success(_room);
+    });
+  }
+
+  Map<String, dynamic> getEstimateFromRoom(Map<String, dynamic> _room, String estimateId) {
+    final estimates = (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true)).toSet();
+    final _estimate = estimates.firstWhere((element) => element['id'] == estimateId);
+    return _estimate;
   }
 }
