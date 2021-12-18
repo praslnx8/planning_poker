@@ -6,6 +6,7 @@ void main() {
   test('should load Estimate from json', () {
     final json = {
       'id': '1',
+      'roomNo': '33',
       'pokerValues': [
         {
           'player': {'id': 'p1'},
@@ -18,18 +19,16 @@ void main() {
 
     Map<Player, int> pokerValueMap = Map.identity();
     pokerValueMap[Player('p1')] = 1;
-    Estimate expected = Estimate('1', pokerValueMap);
+    Estimate expected = Estimate('1', '33', pokerValueMap);
     expect(actual.toJson(), expected.toJson());
   });
 
   test('should load Estimate from json When pokerValues are null', () {
-    final json = {
-      'id': '1'
-    };
+    final json = {'id': '1', 'roomNo': '33'};
 
     Estimate actual = Estimate.fromJson(json);
 
-    Estimate expected = Estimate.init('1');
+    Estimate expected = Estimate.init('1', '33');
     expect(actual.toJson(), expected.toJson());
   });
 }

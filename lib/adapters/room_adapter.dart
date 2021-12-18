@@ -2,7 +2,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:planning_poker/models/estimate.dart';
 import 'package:planning_poker/models/player.dart';
 import 'package:planning_poker/models/room.dart';
-import 'package:planning_poker/utils/console_log.dart';
 
 class RoomAdapter {
   static RoomAdapter _instance = RoomAdapter._();
@@ -65,26 +64,10 @@ class RoomAdapter {
         return Transaction.abort();
       }
       Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      final estimates = (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true)).toSet();
+      final estimates =
+          (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true)).toSet();
       estimates.add(estimate.toJson());
       _room['estimates'] = estimates;
-
-      return Transaction.success(_room);
-    });
-  }
-
-  Future<void> addPokerValue(String roomNo, String estimateId, Player player, int pokerValue) async {
-    DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
-    await roomRef.runTransaction((Object? room) {
-      if (room == null) {
-        return Transaction.abort();
-      }
-      Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      final estimates = (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true)).toSet();
-      final estimate = estimates.firstWhere((element) => element['id'] == estimateId);
-      final pokerValueMap = estimate['_pokerValueMap'] != null ? (estimate['_pokerValueMap'] as Map) : Map.identity();
-      pokerValueMap.putIfAbsent(player.toJson(), () => pokerValue);
-      estimate['pokerValueMap'] = pokerValueMap;
 
       return Transaction.success(_room);
     });
