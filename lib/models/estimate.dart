@@ -13,8 +13,8 @@ class Estimate {
     //TODO call adapter to publish
   }
 
-  void listenToPokerValue() {
-    //TODO Call adapter to listen
+  List<int> getPokerValues() {
+    return _pokerValueMap.entries.map((e) => e.value).toList();
   }
 
   Estimate.fromJson(Map<String, dynamic> json)
@@ -26,6 +26,6 @@ class Estimate {
 
   Map<String, dynamic> toJson() => {
         'id': _id,
-        'pokerValues': _pokerValueMap.entries.map((e) => {'player': e.key, 'value': e.value})
+        'pokerValues': _pokerValueMap.entries.map((e) => {'player': e.key.toJson(), 'value': e.value})
       };
 }

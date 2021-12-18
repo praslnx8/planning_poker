@@ -82,7 +82,11 @@ class _RoomPageState extends State<RoomPage> {
 
   Widget _getContent() {
     if (_room != null) {
-      return Text('Room page');
+      return ElevatedButton(
+          onPressed: () {
+            _room!.startEstimate();
+          },
+          child: Text("Start Estimate"));
     }
     return CircularProgressIndicator();
   }

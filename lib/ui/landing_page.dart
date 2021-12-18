@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planning_poker/models/room.dart';
 import 'package:planning_poker/models/system.dart';
-import 'package:planning_poker/ui/room.page.dart';
+import 'package:planning_poker/ui/room_page.dart';
 import 'package:planning_poker/utils/dialog_utils.dart';
 
 class LandingPage extends StatefulWidget {
