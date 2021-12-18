@@ -5,10 +5,11 @@ class Estimate {
   final String _id;
   final String _roomNo;
   final Map<Player, int> _pokerValueMap;
+  int? _overRideEstimatedValue;
 
   Estimate.init(this._id, this._roomNo) : _pokerValueMap = Map.identity();
 
-  Estimate(this._id, this._roomNo, this._pokerValueMap);
+  Estimate(this._id, this._roomNo, this._pokerValueMap, this._overRideEstimatedValue);
 
   Future<void> addPokerValue(Player player, int value) async {
     _pokerValueMap[player] = value;
@@ -19,17 +20,33 @@ class Estimate {
     return _pokerValueMap.entries.map((e) => e.value).toList();
   }
 
+  /// Override the estimated value when conflict occurs with players.
+  Future<void> overRideEstimatedValue(int value) {
+    _overRideEstimatedValue = value;
+    return EstimateAdapter.instance.overRideEstimatedValue(_roomNo, _id, value);
+  }
+
+  int getEstimatedValue() {
+    if (_overRideEstimatedValue != null) {
+      return _overRideEstimatedValue!;
+    }
+
+    return _pokerValueMap.entries.toList().map((e) => e.value).reduce((value, element) => value + element);
+  }
+
   Estimate.fromJson(Map<String, dynamic> json)
       : _id = json['id'],
         _roomNo = json['roomNo'],
-        _pokerValueMap = json['pokerValues'] != null
+        _pokerValueMap = (json['pokerValues'] != null
             ? Map.fromEntries(
                 (json['pokerValues'] as List).map((e) => MapEntry(Player.fromJson(e['player']), e['value'])))
-            : Map.identity();
+            : Map.identity()),
+        _overRideEstimatedValue = json['overRideEstimatedValue'];
 
   Map<String, dynamic> toJson() => {
         'id': _id,
         'roomNo': _roomNo,
-        'pokerValues': _pokerValueMap.entries.map((e) => {'player': e.key.toJson(), 'value': e.value})
+        'pokerValues': _pokerValueMap.entries.map((e) => {'player': e.key.toJson(), 'value': e.value}),
+        'overRideEstimatedValue': _overRideEstimatedValue
       };
 }

@@ -25,4 +25,20 @@ class EstimateAdapter {
       return Transaction.success(_room);
     });
   }
+
+  Future<void> overRideEstimatedValue(String roomNo, String estimateId, int value) async {
+    DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
+    await roomRef.runTransaction((Object? room) {
+      if (room == null) {
+        return Transaction.abort();
+      }
+      Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
+      final estimates =
+          (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true)).toSet();
+      final estimate = estimates.firstWhere((element) => element['id'] == estimateId);
+      estimate['overRideEstimatedValue'] = value;
+
+      return Transaction.success(_room);
+    });
+  }
 }
