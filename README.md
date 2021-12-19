@@ -2,6 +2,10 @@
 
 A new Flutter project.
 
+## Setup
+- Create a firebase web app with realtime database and analytics enabled
+- Create a new file `.env` using the template `.env.example` with the values for the firebase app
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
