@@ -75,10 +75,22 @@ class _RoomPageState extends State<RoomPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Room ' + widget.roomId),
+        actions: [
+          Row(
+            children: [
+              Icon(Icons.people_alt_outlined),
+              Padding(
+                  padding: EdgeInsets.only(left: 8, right: 8),
+                  child: Text(_getPlayerCount()))
+            ],
+          ),
+        ],
       ),
       body: Center(child: _getContent()),
     );
   }
+
+  String _getPlayerCount() => _room == null ? "0": _room!.getTotalPlayers().toString();
 
   Widget _getContent() {
     if (_room != null) {

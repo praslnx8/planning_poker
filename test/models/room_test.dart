@@ -47,4 +47,11 @@ void main() {
     Room expected = Room.init('1', Facilitator('1'));
     expect(actual.toJson(), expected.toJson());
   });
+
+  test('should have total players count', () {
+    var players = [Player("p1"), Player("p2")];
+    Room room = Room("1", Facilitator("0"), [], players.toSet());
+
+    expect(room.getTotalPlayers(), 2);
+  });
 }

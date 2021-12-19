@@ -39,6 +39,10 @@ class Room {
     return _estimates.map((e) => e.getEstimatedValue()).reduce((value, element) => value + element);
   }
 
+  int getTotalPlayers() {
+    return _players.length;
+  }
+
   Room.fromJson(Map<String, dynamic> json)
       : _id = json['id'],
         _facilitator = Facilitator.fromJson(json['facilitator']),
