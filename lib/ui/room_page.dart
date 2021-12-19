@@ -97,8 +97,8 @@ class _RoomPageState extends State<RoomPage> {
         );
   }
 
-  String _getPlayerCount() => _room == null ? "0": _room!.getTotalPlayers().toString();
-  String _getTotalEstimate() => _room == null ? "0": _room!.getTotalEstimates().toString();
+  String _getPlayerCount() => _room == null ? '0': '${_room!.getTotalPlayers()}';
+  String _getTotalEstimate() => _room == null ? '0': '${_room!.getTotalEstimates()}';
 
   Widget _getContent() {
     if (_room != null) {
@@ -116,7 +116,7 @@ class _RoomPageState extends State<RoomPage> {
               onPressed: () {
                 _startEstimate();
               },
-              child: Text("Start Estimate"));
+              child: Text('Start Estimate'));
         } else {
           return Text('Waiting for facilitator to start');
         }

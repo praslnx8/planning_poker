@@ -49,8 +49,8 @@ void main() {
   });
 
   test('should have total players count', () {
-    var players = [Player("p1"), Player("p2")];
-    Room room = Room("1", Facilitator("0"), [], players.toSet());
+    var players = [Player('p1'), Player('p2')];
+    Room room = Room('1', Facilitator('0'), [], players.toSet());
 
     expect(room.getTotalPlayers(), 2);
   });

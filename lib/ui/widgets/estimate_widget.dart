@@ -28,9 +28,9 @@ class EstimateWidget extends StatelessWidget {
 
   Widget _getActionButton() {
     if (estimate.isRevealed) {
-      return ElevatedButton(onPressed: () => startEstimate(), child: Text("Start Estimate"));
+      return ElevatedButton(onPressed: () => startEstimate(), child: Text('Start Estimate'));
     } else {
-      return ElevatedButton(onPressed: () => reveal(), child: Text("Reveal"));
+      return ElevatedButton(onPressed: () => reveal(), child: Text('Reveal'));
     }
   }
 
@@ -38,7 +38,7 @@ class EstimateWidget extends StatelessWidget {
     final List<Widget> widgets = [1, 2, 3, 5, 8]
         .map((e) => Card(
                 child: TextButton(
-              child: Text(e.toString()),
+              child: Text('$e'),
               onPressed: () => sendPokerValue(e),
             )))
         .toList();
@@ -48,7 +48,7 @@ class EstimateWidget extends StatelessWidget {
 
   Widget _getPokerValueWidgets() {
     final List<Widget> widgets = estimate.getPokerValues().map((e) {
-      final pokerValue = estimate.isRevealed ? e.toString() : 'X';
+      final pokerValue = estimate.isRevealed ? '$e' : 'X';
       return Card(child: Text(pokerValue));
     }).toList();
 

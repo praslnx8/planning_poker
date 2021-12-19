@@ -7,18 +7,18 @@ import 'app_router.dart';
 import 'firebase_options.dart';
 
 Future main() async {
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  System.instance.login();
   runApp(PlanningPokerApp());
 }
 
 class PlanningPokerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    System.instance.login();
     return MaterialApp(
         title: 'Planning Poker',
         debugShowCheckedModeBanner: false,

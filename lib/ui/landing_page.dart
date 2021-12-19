@@ -45,7 +45,7 @@ class _LandingPageState extends State<LandingPage> {
 
   void _createRoom() {
     _setLoading();
-    System.instance.createRoom().then((room) => _setRoom(room), onError: (error) => _setError(error.toString()));
+    System.instance.createRoom().then((room) => _setRoom(room), onError: (error) => _setError('$error'));
   }
 
   void _joinRoom(String roomNo) {
@@ -127,7 +127,7 @@ class _LandingPageState extends State<LandingPage> {
                   _createRoom();
                 },
                 icon: Icon(Icons.add),
-                label: Text("Create Room"),
+                label: Text('Create Room'),
               ),
             ],
           ));

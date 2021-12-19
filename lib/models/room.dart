@@ -23,7 +23,7 @@ class Room {
   String get id => _id;
 
   Future<Estimate> startEstimate() async {
-    final estimate = Estimate.init(_estimates.length.toString(), id);
+    final estimate = Estimate.init('$_estimates.length', id);
     _estimates.add(estimate);
     await RoomAdapter.instance.addEstimate(id, estimate);
     return Future.value(estimate);

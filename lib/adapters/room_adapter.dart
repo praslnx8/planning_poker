@@ -30,7 +30,7 @@ class RoomAdapter {
       return Transaction.success(_roomIdPool);
     });
 
-    return Future.value(newId.toString());
+    return Future.value('$newId');
   }
 
   Future<Room> getRoom(String roomNo) async {
