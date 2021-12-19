@@ -78,7 +78,7 @@ class _RoomPageState extends State<RoomPage> {
         actions: [
           Row(
             children: [
-              Icon(Icons.people_alt_outlined),
+              Icon(Icons.people_alt),
               Padding(
                   padding: EdgeInsets.only(left: 8, right: 16),
                   child: Text(_getPlayerCount()))
@@ -88,7 +88,7 @@ class _RoomPageState extends State<RoomPage> {
             children: [
               Icon(Icons.check),
               Padding(
-                  padding: EdgeInsets.only(left: 8, right: 8),
+                  padding: EdgeInsets.only(left: 8, right: 16),
                   child: Text(_getTotalEstimate()))
             ],
           ),
