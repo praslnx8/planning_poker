@@ -76,26 +76,23 @@ class _RoomPageState extends State<RoomPage> {
       appBar: AppBar(
         title: Text('Room ' + widget.roomId),
         actions: [
-          Row(
-            children: [
-              Icon(Icons.people_alt),
-              Padding(
-                  padding: EdgeInsets.only(left: 8, right: 16),
-                  child: Text(_getPlayerCount()))
-            ],
-          ),
-          Row(
-            children: [
-              Icon(Icons.check),
-              Padding(
-                  padding: EdgeInsets.only(left: 8, right: 16),
-                  child: Text(_getTotalEstimate()))
-            ],
-          ),
+          _buildInfoItem(Icons.people_alt, _getPlayerCount()),
+          _buildInfoItem(Icons.check, _getTotalEstimate())
         ],
       ),
       body: Center(child: _getContent()),
     );
+  }
+
+  Row _buildInfoItem(IconData icon, String text) {
+    return Row(
+          children: [
+            Icon(icon),
+            Padding(
+                padding: EdgeInsets.only(left: 8, right: 16),
+                child: Text(text))
+          ],
+        );
   }
 
   String _getPlayerCount() => _room == null ? "0": _room!.getTotalPlayers().toString();
