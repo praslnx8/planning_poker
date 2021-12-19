@@ -80,8 +80,16 @@ class _RoomPageState extends State<RoomPage> {
             children: [
               Icon(Icons.people_alt_outlined),
               Padding(
-                  padding: EdgeInsets.only(left: 8, right: 8),
+                  padding: EdgeInsets.only(left: 8, right: 16),
                   child: Text(_getPlayerCount()))
+            ],
+          ),
+          Row(
+            children: [
+              Icon(Icons.check),
+              Padding(
+                  padding: EdgeInsets.only(left: 8, right: 8),
+                  child: Text(_getTotalEstimate()))
             ],
           ),
         ],
@@ -91,6 +99,7 @@ class _RoomPageState extends State<RoomPage> {
   }
 
   String _getPlayerCount() => _room == null ? "0": _room!.getTotalPlayers().toString();
+  String _getTotalEstimate() => _room == null ? "0": _room!.getTotalEstimates().toString();
 
   Widget _getContent() {
     if (_room != null) {
