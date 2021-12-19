@@ -41,6 +41,10 @@ class Room {
     return _estimates.map((e) => e.getEstimatedValue()).reduce((value, element) => value + element);
   }
 
+  int getTotalPlayers() {
+    return _players.length;
+  }
+  
   Future<void> revealCurrentEstimate() {
     return getCurrentEstimate()!.reveal();
   }

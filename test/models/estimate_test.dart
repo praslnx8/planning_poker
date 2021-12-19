@@ -33,4 +33,34 @@ void main() {
     Estimate expected = Estimate.init('1', '33');
     expect(actual.toJson(), expected.toJson());
   });
+
+  test('should get estimated value', () {
+    final json = {
+      'id': '1',
+      'roomNo': '33',
+      'pokerValues': [
+        {
+          'player': {'id': 'p1'},
+          'value': 3
+        },
+        {
+          'player': {'id': 'p2'},
+          'value': 5
+        }
+      ],
+      'reveal': false
+    };
+
+    Estimate estimate = Estimate.fromJson(json);
+
+    expect(estimate.getEstimatedValue(), 8);
+  });
+
+  test('should get estimated value as 0 when no estimates are present', () {
+    final json = {'id': '1', 'roomNo': '33'};
+
+    Estimate estimate = Estimate.fromJson(json);
+
+    expect(estimate.getEstimatedValue(), 0);
+  });
 }

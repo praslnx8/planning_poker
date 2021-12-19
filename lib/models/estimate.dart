@@ -40,8 +40,7 @@ class Estimate {
     if (_overRideEstimatedValue != null) {
       return _overRideEstimatedValue!;
     }
-
-    return getPokerValues().reduce((value, element) => value + element);
+    return getPokerValues().isNotEmpty ? getPokerValues().reduce((value, element) => value + element) : 0;
   }
 
   bool get isRevealed => _reveal;
