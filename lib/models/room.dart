@@ -2,7 +2,6 @@ import 'package:planning_poker/adapters/room_adapter.dart';
 import 'package:planning_poker/models/estimate.dart';
 import 'package:planning_poker/models/facilitator.dart';
 import 'package:planning_poker/models/player.dart';
-import 'package:planning_poker/models/user.dart';
 
 class Room {
   final String _id;
@@ -16,8 +15,7 @@ class Room {
 
   Room(this._id, this._facilitator, this._estimates, this._players);
 
-  Future<void> joinRoom(User user) async {
-    final player = Player(user.id);
+  Future<void> joinRoom(Player player) async {
     this._players.add(player);
     return RoomAdapter.instance.addPlayer(id, player);
   }
@@ -31,12 +29,24 @@ class Room {
     return Future.value(estimate);
   }
 
+  bool isUserFacilitator(String userId) {
+    return userId == _facilitator.id;
+  }
+
   Estimate? getCurrentEstimate() {
-    return _estimates.last;
+    return _estimates.isNotEmpty ? _estimates.last : null;
   }
 
   int getTotalEstimates() {
     return _estimates.map((e) => e.getEstimatedValue()).reduce((value, element) => value + element);
+  }
+
+  Future<void> revealCurrentEstimate() {
+    return getCurrentEstimate()!.reveal();
+  }
+
+  Future<void> addPokerValueToCurrentEstimate(Player player, int value) {
+    return getCurrentEstimate()!.addPokerValue(player, value);
   }
 
   Room.fromJson(Map<String, dynamic> json)

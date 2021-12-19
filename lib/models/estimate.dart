@@ -18,7 +18,11 @@ class Estimate {
   }
 
   List<int> getPokerValues() {
-    return _pokerValueMap.entries.map((e) => e.value).toList();
+    if (_reveal) {
+      return _pokerValueMap.entries.map((e) => e.value).toList();
+    } else {
+      return _pokerValueMap.entries.map((e) => 0).toList();
+    }
   }
 
   /// Override the estimated value when conflict occurs with players.
@@ -37,8 +41,10 @@ class Estimate {
       return _overRideEstimatedValue!;
     }
 
-    return _pokerValueMap.entries.toList().map((e) => e.value).reduce((value, element) => value + element);
+    return getPokerValues().reduce((value, element) => value + element);
   }
+
+  bool get isRevealed => _reveal;
 
   Estimate.fromJson(Map<String, dynamic> json)
       : _id = json['id'],

@@ -1,6 +1,7 @@
 import 'package:planning_poker/adapters/room_adapter.dart';
 import 'package:planning_poker/adapters/user_adapter.dart';
 import 'package:planning_poker/models/facilitator.dart';
+import 'package:planning_poker/models/player.dart';
 import 'package:planning_poker/models/room.dart';
 import 'package:planning_poker/models/user.dart';
 
@@ -25,11 +26,11 @@ class System {
     UserAdapter.instance.login().then((uid) => {_user = User(uid)});
   }
 
-  Future<Room> joinRoom(String roomNo) async {
+  Future<Room> joinRoomAsPlayer(String roomNo) async {
     final room = await RoomAdapter.instance.getRoom(roomNo);
 
     if (_user != null) {
-      await room.joinRoom(_user!);
+      await room.joinRoom(new Player(_user!.id));
       return Future.value(room);
     } else {
       return Future.error('User not available');
@@ -50,5 +51,11 @@ class System {
     } else {
       return Future.error('User not found');
     }
+  }
+
+  User? get user => _user;
+
+  Player getPlayer() {
+    return Player(user!.id);
   }
 }
