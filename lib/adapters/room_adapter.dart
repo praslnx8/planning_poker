@@ -50,9 +50,13 @@ class RoomAdapter {
         return Transaction.abort();
       }
       Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      final players = (_room['players'] != null ? _room['players'] as List : List.empty(growable: true)).toSet();
-      players.add(player.toJson());
-      _room['players'] = players;
+      final _players = (_room['players'] != null ? _room['players'] as List : List.empty(growable: true));
+      final _player =
+          _players.firstWhere((element) => element != null && element['id'] == player.id, orElse: () => null);
+      if (_player == null) {
+        _players.add(player.toJson());
+      }
+      _room['players'] = _players;
       return Transaction.success(_room);
     });
   }
@@ -64,10 +68,10 @@ class RoomAdapter {
         return Transaction.abort();
       }
       Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      final estimates =
-          (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true)).toSet();
-      estimates.add(estimate.toJson());
-      _room['estimates'] = estimates;
+      final _estimates =
+          (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true));
+      _estimates.add(estimate.toJson());
+      _room['estimates'] = _estimates;
 
       return Transaction.success(_room);
     });
