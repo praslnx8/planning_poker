@@ -38,13 +38,14 @@ class Room {
   }
 
   int getTotalEstimates() {
-    return _estimates.map((e) => e.getEstimatedValue()).reduce((value, element) => value + element);
+    final estimatedValueList = _estimates.map((e) => e.getEstimatedValue());
+    return estimatedValueList.isNotEmpty ? estimatedValueList.reduce((value, element) => value + element) : 0;
   }
 
   int getTotalPlayers() {
     return _players.length;
   }
-  
+
   Future<void> revealCurrentEstimate() {
     return getCurrentEstimate()!.reveal();
   }
