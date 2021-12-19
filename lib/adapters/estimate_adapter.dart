@@ -8,7 +8,7 @@ class EstimateAdapter {
 
   EstimateAdapter._();
 
-  Future<void> addPokerValue(String roomNo, String estimateId, Player player, int pokerValue) async {
+  Future<void> addPokerValue(String roomNo, String estimateId, Player player, int value) async {
     DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
     await roomRef.runTransaction((Object? room) {
       if (room == null) {
@@ -17,9 +17,17 @@ class EstimateAdapter {
       Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
       Map<String, dynamic> _estimate = getEstimateFromRoom(_room, estimateId);
 
-      final pokerValueMap = _estimate['_pokerValueMap'] != null ? (_estimate['_pokerValueMap'] as Map) : Map.identity();
-      pokerValueMap.putIfAbsent(player.toJson(), () => pokerValue);
-      _estimate['pokerValueMap'] = pokerValueMap;
+      final pokerValues =
+          _estimate['pokerValues'] != null ? (_estimate['pokerValues'] as List) : List.empty(growable: true);
+      final pokerValue = pokerValues.firstWhere(
+          (element) => element != null && element['player'] != null && element['player']['id'] == player.id,
+          orElse: () => null);
+      if (pokerValue != null) {
+        pokerValue['value'] = value;
+      } else {
+        pokerValues.add({'player': player.toJson(), 'value': value});
+      }
+      _estimate['pokerValues'] = pokerValues;
 
       return Transaction.success(_room);
     });

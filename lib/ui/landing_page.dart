@@ -50,7 +50,7 @@ class _LandingPageState extends State<LandingPage> {
 
   void _joinRoom(String roomNo) {
     _setLoading();
-    System.instance.joinRoom(roomNo).then((room) => {_setRoom(room)}, onError: (error) => _setError(error));
+    System.instance.joinRoomAsPlayer(roomNo).then((room) => {_setRoom(room)}, onError: (error) => _setError(error));
   }
 
   @override

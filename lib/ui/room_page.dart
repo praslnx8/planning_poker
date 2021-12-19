@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planning_poker/models/room.dart';
 import 'package:planning_poker/models/system.dart';
+import 'package:planning_poker/ui/widgets/estimate_widget.dart';
 import 'package:planning_poker/utils/dialog_utils.dart';
 
 class RoomPage extends StatefulWidget {
@@ -27,7 +28,7 @@ class RoomPage extends StatefulWidget {
 }
 
 class _RoomPageState extends State<RoomPage> {
-  bool _loading = false;
+  bool _loading = true;
   dynamic _error;
   Room? _room;
 
@@ -58,8 +59,6 @@ class _RoomPageState extends State<RoomPage> {
   @override
   void initState() {
     super.initState();
-    _setLoading();
-    System.instance.joinRoom(widget.roomId).then((room) => {_setRoom(room)}, onError: (error) => {_setError(error)});
     System.instance.listenToRoomUpdates(widget.roomId).listen((room) {
       _setRoom(room);
     });
@@ -72,6 +71,7 @@ class _RoomPageState extends State<RoomPage> {
         DialogUtils.instance.showErrorDialog(context, _error!);
       });
     }
+    var screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text('Room ' + widget.roomId),
@@ -80,7 +80,9 @@ class _RoomPageState extends State<RoomPage> {
           _buildInfoItem(Icons.check, _getTotalEstimate())
         ],
       ),
-      body: Center(child: _getContent()),
+      body: Center(
+        child: _getContent(),
+      ),
     );
   }
 
@@ -100,12 +102,38 @@ class _RoomPageState extends State<RoomPage> {
 
   Widget _getContent() {
     if (_room != null) {
-      return ElevatedButton(
-          onPressed: () {
-            _room!.startEstimate();
-          },
-          child: Text("Start Estimate"));
+      final isFacilitator = _room!.isUserFacilitator(System.instance.user!.id);
+      if (_room!.getCurrentEstimate() != null) {
+        return EstimateWidget(
+            estimate: _room!.getCurrentEstimate()!,
+            isFacilitator: isFacilitator,
+            startEstimate: _startEstimate,
+            sendPokerValue: _sendPokerValue,
+            reveal: _reveal);
+      } else {
+        if (isFacilitator) {
+          return ElevatedButton(
+              onPressed: () {
+                _startEstimate();
+              },
+              child: Text("Start Estimate"));
+        } else {
+          return Text('Waiting for facilitator to start');
+        }
+      }
     }
     return CircularProgressIndicator();
+  }
+
+  _startEstimate() {
+    _room!.startEstimate();
+  }
+
+  _reveal() {
+    _room!.revealCurrentEstimate();
+  }
+
+  _sendPokerValue(int value) {
+    _room!.addPokerValueToCurrentEstimate(System.instance.getPlayer(), value);
   }
 }
