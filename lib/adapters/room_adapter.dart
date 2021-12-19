@@ -52,7 +52,7 @@ class RoomAdapter {
       Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
       final players = (_room['players'] != null ? _room['players'] as List : List.empty(growable: true)).toSet();
       players.add(player.toJson());
-
+      _room['players'] = players;
       return Transaction.success(_room);
     });
   }
