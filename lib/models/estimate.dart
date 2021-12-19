@@ -36,8 +36,8 @@ class Estimate {
     if (_overRideEstimatedValue != null) {
       return _overRideEstimatedValue!;
     }
-
-    return _pokerValueMap.entries.toList().map((e) => e.value).reduce((value, element) => value + element);
+    var estimateValues = _pokerValueMap.entries.toList().map((e) => e.value);
+    return estimateValues.length == 0 ? 0 : estimateValues.reduce((value, element) => value + element);
   }
 
   Estimate.fromJson(Map<String, dynamic> json)
