@@ -55,7 +55,7 @@ class _RoomPageState extends State<RoomPage> {
     super.initState();
     System.instance.joinRoomAsPlayer(roomNo: widget.roomId).then((room) {
       _roomSubscription = System.instance.listenToRoomUpdates(roomNo: widget.roomId).listen((updatedRoom) {
-        System.instance.isUserFacilitator(room: room).then((isFacilitator) => _setData(room, isFacilitator));
+        System.instance.isUserFacilitator(room: updatedRoom).then((isFacilitator) => _setData(updatedRoom, isFacilitator));
       }, onError: (error) => _setError(error));
     }, onError: (error) => _setError(error));
   }
