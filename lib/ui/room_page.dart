@@ -53,13 +53,13 @@ class _RoomPageState extends State<RoomPage> {
   @override
   void initState() {
     super.initState();
-    System.instance.joinRoomAsPlayer(roomNo: widget.roomId).then((room) {
-      _roomSubscription = System.instance.listenToRoomUpdates(roomNo: widget.roomId).listen((updatedRoom) {
-        System.instance.isUserFacilitator(room: updatedRoom).then((isFacilitator) => _setData(updatedRoom, isFacilitator));
-      }, onError: (error) => _setError(error));
+    System.instance.joinRoomAsPlayer(roomNo: widget.roomId);
+    _roomSubscription = System.instance.listenToRoomUpdates(roomNo: widget.roomId).listen((updatedRoom) {
+      System.instance
+          .isUserFacilitator(room: updatedRoom)
+          .then((isFacilitator) => _setData(updatedRoom, isFacilitator));
     }, onError: (error) => _setError(error));
   }
-
 
   @override
   void dispose() {
@@ -111,11 +111,7 @@ class _RoomPageState extends State<RoomPage> {
             reveal: _reveal);
       } else {
         if (_isFacilitator!) {
-          return ElevatedButton(
-              onPressed: () => {
-                _startEstimate()
-              },
-              child: Text('Start Estimate'));
+          return ElevatedButton(onPressed: () => {_startEstimate()}, child: Text('Start Estimate'));
         } else {
           return Text('Waiting for facilitator to start');
         }
