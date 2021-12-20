@@ -39,6 +39,12 @@ class System {
     return Future.value(room);
   }
 
+  Future<Room> getRoom({required String roomNo}) async {
+    await getPlayer();
+    final room = (await RoomAdapter.instance.getRoom(roomNo: roomNo)).toRoom();
+    return Future.value(room);
+  }
+
   Stream<Room> listenToRoomUpdates({required String roomNo}) {
     return RoomAdapter.instance.listenToRoomUpdates(roomNo).map((roomDTO) => roomDTO.toRoom());
   }
