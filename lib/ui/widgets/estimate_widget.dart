@@ -19,10 +19,14 @@ class EstimateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isFacilitator) {
       return Column(
-          crossAxisAlignment: CrossAxisAlignment.center, children: [_getPokerValueWidgets(), _getActionButton()]);
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [_getPokerValueWidgets(), _getActionButton()]);
     } else {
       return Column(
-          crossAxisAlignment: CrossAxisAlignment.center, children: [_getPokerValueWidgets(), _getPokerCards()]);
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [_getPokerValueWidgets(), _getPokerCards()]);
     }
   }
 

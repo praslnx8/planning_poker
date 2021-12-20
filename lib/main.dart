@@ -18,7 +18,6 @@ Future main() async {
 class PlanningPokerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    System.instance.login();
     return MaterialApp(
         title: 'Planning Poker',
         debugShowCheckedModeBanner: false,

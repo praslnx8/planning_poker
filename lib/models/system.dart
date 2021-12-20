@@ -20,42 +20,58 @@ class System {
 
   System._();
 
-  User? _user;
-
-  void login() {
-    UserAdapter.instance.login().then((uid) => {_user = User(uid)});
+  Future<User> getUser() async {
+    final uid = await UserAdapter.instance.getCurrentUid();
+    if (uid == null) {
+      final loginUid = await UserAdapter.instance.login();
+      return Future.value(User(loginUid));
+    } else {
+      return Future.value(User(uid));
+    }
   }
 
   Future<Room> joinRoomAsPlayer(String roomNo) async {
+    final player = await getPlayer();
     final room = await RoomAdapter.instance.getRoom(roomNo);
 
-    if (_user != null) {
-      await room.joinRoom(new Player(_user!.id));
-      return Future.value(room);
-    } else {
-      return Future.error('User not available');
-    }
+    await room.joinRoom(player);
+    return Future.value(room);
   }
 
-  Stream<Room> listenToRoomUpdates(String roomNo) {
-    return RoomAdapter.instance.listenToRoomUpdates(roomNo);
+  Future<Stream<Room>> listenToRoomUpdates(String roomNo) async {
+    final player = await getPlayer();
+    final room = await RoomAdapter.instance.getRoom(roomNo);
+    if (!(await isUserFacilitator(room))) {
+      await room.joinRoom(player);
+    }
+    return Future.value(RoomAdapter.instance.listenToRoomUpdates(roomNo));
   }
 
   Future<Room> createRoom() async {
-    if (_user != null) {
-      final roomId = await RoomAdapter.instance.getRoomId();
-      final Facilitator facilitator = Facilitator(_user!.id);
-      final Room room = Room.init(roomId, facilitator);
-      await RoomAdapter.instance.createRoom(room);
-      return Future.value(room);
-    } else {
-      return Future.error('User not found');
-    }
+    final Facilitator facilitator = await getFacilitator();
+    final roomId = await RoomAdapter.instance.getRoomId();
+    final Room room = Room.init(roomId, facilitator);
+    await RoomAdapter.instance.createRoom(room);
+    return Future.value(room);
   }
 
-  User? get user => _user;
+  Future<Player> getPlayer() async {
+    final user = await getUser();
+    return Player(user.id);
+  }
 
-  Player getPlayer() {
-    return Player(user!.id);
+  Future<Facilitator> getFacilitator() async {
+    final user = await getUser();
+    return Facilitator(user.id);
+  }
+
+  Future addPokerValueToCurrentEstimate(Room room, int value) async {
+    final player = await getPlayer();
+    room.addPokerValueToCurrentEstimate(player, value);
+  }
+
+  Future<bool> isUserFacilitator(Room room) async {
+    final user = await getUser();
+    return Future.value(room.facilitator.id == user.id);
   }
 }

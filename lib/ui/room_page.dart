@@ -28,29 +28,20 @@ class RoomPage extends StatefulWidget {
 }
 
 class _RoomPageState extends State<RoomPage> {
-  bool _loading = true;
   dynamic _error;
+  bool? _isFacilitator;
   Room? _room;
 
-  void _setRoom(Room room) {
+  void _setData(Room room, bool isFacilitator) {
     setState(() {
-      _loading = false;
       _room = room;
-      _error = null;
-    });
-  }
-
-  void _setLoading() {
-    setState(() {
-      _loading = true;
-      _room = null;
+      _isFacilitator = isFacilitator;
       _error = null;
     });
   }
 
   void _setError(error) {
     setState(() {
-      _loading = false;
       _room = null;
       _error = error;
     });
@@ -59,9 +50,13 @@ class _RoomPageState extends State<RoomPage> {
   @override
   void initState() {
     super.initState();
-    System.instance.listenToRoomUpdates(widget.roomId).listen((room) {
-      _setRoom(room);
-    });
+    System.instance.listenToRoomUpdates(widget.roomId).then(
+        (value) => {
+              value.listen((room) {
+                System.instance.isUserFacilitator(room).then((isFacilitator) => {_setData(room, isFacilitator)});
+              }, onError: (error) => _setError(error))
+            },
+        onError: (error) => {_setError(error)});
   }
 
   @override
@@ -71,7 +66,6 @@ class _RoomPageState extends State<RoomPage> {
         DialogUtils.instance.showErrorDialog(context, _error!);
       });
     }
-    var screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text('Room ' + widget.roomId),
@@ -88,30 +82,26 @@ class _RoomPageState extends State<RoomPage> {
 
   Row _buildInfoItem(IconData icon, String text) {
     return Row(
-          children: [
-            Icon(icon),
-            Padding(
-                padding: EdgeInsets.only(left: 8, right: 16),
-                child: Text(text))
-          ],
-        );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [Icon(icon), Padding(padding: EdgeInsets.only(left: 8, right: 16), child: Text(text))],
+    );
   }
 
-  String _getPlayerCount() => _room == null ? '0': '${_room!.getTotalPlayers()}';
-  String _getTotalEstimate() => _room == null ? '0': '${_room!.getTotalEstimates()}';
+  String _getPlayerCount() => _room == null ? '0' : '${_room!.getTotalPlayers()}';
+
+  String _getTotalEstimate() => _room == null ? '0' : '${_room!.getTotalEstimates()}';
 
   Widget _getContent() {
-    if (_room != null) {
-      final isFacilitator = _room!.isUserFacilitator(System.instance.user!.id);
+    if (_room != null && _isFacilitator != null) {
       if (_room!.getCurrentEstimate() != null) {
         return EstimateWidget(
             estimate: _room!.getCurrentEstimate()!,
-            isFacilitator: isFacilitator,
+            isFacilitator: _isFacilitator!,
             startEstimate: _startEstimate,
             sendPokerValue: _sendPokerValue,
             reveal: _reveal);
       } else {
-        if (isFacilitator) {
+        if (_isFacilitator!) {
           return ElevatedButton(
               onPressed: () {
                 _startEstimate();
@@ -134,6 +124,6 @@ class _RoomPageState extends State<RoomPage> {
   }
 
   _sendPokerValue(int value) {
-    _room!.addPokerValueToCurrentEstimate(System.instance.getPlayer(), value);
+    System.instance.addPokerValueToCurrentEstimate(_room!, value);
   }
 }

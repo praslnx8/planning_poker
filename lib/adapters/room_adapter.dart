@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:planning_poker/models/estimate.dart';
 import 'package:planning_poker/models/player.dart';
 import 'package:planning_poker/models/room.dart';
+import 'package:planning_poker/utils/console_log.dart';
 
 class RoomAdapter {
   static RoomAdapter _instance = RoomAdapter._();
@@ -34,8 +35,8 @@ class RoomAdapter {
   }
 
   Future<Room> getRoom(String roomNo) async {
-    DatabaseReference roomPoolRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
-    DataSnapshot dataSnapshot = await roomPoolRef.get();
+    DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
+    DataSnapshot dataSnapshot = await roomRef.get();
     if (dataSnapshot.value != null) {
       return Future.value(Room.fromJson(dataSnapshot.value as Map<String, dynamic>));
     } else {
@@ -47,6 +48,7 @@ class RoomAdapter {
     DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
     await roomRef.runTransaction((Object? room) {
       if (room == null) {
+        ConsoleLog.i('room is null');
         return Transaction.abort();
       }
       Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
@@ -59,6 +61,7 @@ class RoomAdapter {
       _room['players'] = _players;
       return Transaction.success(_room);
     });
+    return Future.value();
   }
 
   Future<void> addEstimate(String roomNo, Estimate estimate) async {
@@ -68,13 +71,13 @@ class RoomAdapter {
         return Transaction.abort();
       }
       Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      final _estimates =
-          (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true));
+      final _estimates = (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true));
       _estimates.add(estimate.toJson());
       _room['estimates'] = _estimates;
 
       return Transaction.success(_room);
     });
+    return Future.value();
   }
 
   Stream<Room> listenToRoomUpdates(String roomNo) {

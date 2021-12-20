@@ -17,4 +17,8 @@ class UserAdapter {
       return Future.error('unable to login');
     }
   }
+
+  Future<String?> getCurrentUid() async {
+    return Future.value(FirebaseAuth.instance.currentUser?.uid);
+  }
 }

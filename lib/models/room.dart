@@ -29,10 +29,6 @@ class Room {
     return Future.value(estimate);
   }
 
-  bool isUserFacilitator(String userId) {
-    return userId == _facilitator.id;
-  }
-
   Estimate? getCurrentEstimate() {
     return _estimates.isNotEmpty ? _estimates.last : null;
   }
@@ -45,6 +41,8 @@ class Room {
   int getTotalPlayers() {
     return _players.length;
   }
+
+  Facilitator get facilitator => _facilitator;
 
   Future<void> revealCurrentEstimate() {
     return getCurrentEstimate()!.reveal();

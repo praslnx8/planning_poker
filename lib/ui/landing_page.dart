@@ -84,8 +84,14 @@ class _LandingPageState extends State<LandingPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Text('Distributed scrum planning poker for estimating agile projects',
+                  style: Theme.of(context).textTheme.headline6),
+              Padding(padding: EdgeInsets.all(12)),
+              Text(
+                  ' First person to create the room is the moderator. Share the url or room number with other team members to join the room.',
+                  style: Theme.of(context).textTheme.subtitle1),
+              Padding(padding: EdgeInsets.all(12)),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
@@ -101,6 +107,9 @@ class _LandingPageState extends State<LandingPage> {
                       },
                       decoration: InputDecoration(
                         icon: Icon(Icons.meeting_room),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(width: 5.0),
+                        ),
                         labelText: 'Enter Room no',
                       ),
                     ),
