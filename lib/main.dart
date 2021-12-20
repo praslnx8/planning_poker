@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app_router.dart';
+import 'configure_non_web.dart' if (dart.library.html) 'configure_web.dart';
 import 'firebase_options.dart';
 
 Future main() async {
@@ -11,6 +12,7 @@ Future main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  configureApp();
   runApp(PlanningPokerApp());
 }
 

@@ -22,7 +22,7 @@ class System {
   System._();
 
   Future<User> getUser() async {
-    final uid = await UserAdapter.instance.getCurrentUid();
+    final uid = UserAdapter.instance.getCurrentUid();
     if (uid == null) {
       final loginUid = await UserAdapter.instance.login();
       return Future.value(User(id: loginUid));

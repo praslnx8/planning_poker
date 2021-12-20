@@ -60,6 +60,7 @@ class _RoomPageState extends State<RoomPage> {
     }, onError: (error) => _setError(error));
   }
 
+
   @override
   void dispose() {
     _roomSubscription?.cancel();
@@ -104,6 +105,7 @@ class _RoomPageState extends State<RoomPage> {
         return EstimateWidget(
             estimate: _room!.getCurrentEstimate()!,
             isFacilitator: _isFacilitator!,
+            playerCount: _room!.players.length,
             startEstimate: _startEstimate,
             sendPokerValue: _sendPokerValue,
             reveal: _reveal);

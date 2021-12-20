@@ -4,6 +4,7 @@ import 'package:planning_poker/models/estimate.dart';
 class EstimateWidget extends StatelessWidget {
   final Estimate estimate;
   final bool isFacilitator;
+  final int playerCount;
   final Function startEstimate;
   final Function sendPokerValue;
   final Function reveal;
@@ -11,6 +12,7 @@ class EstimateWidget extends StatelessWidget {
   const EstimateWidget(
       {required this.estimate,
       required this.isFacilitator,
+      required this.playerCount,
       required this.startEstimate,
       required this.sendPokerValue,
       required this.reveal});
@@ -21,26 +23,46 @@ class EstimateWidget extends StatelessWidget {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [_getPokerCards(context), _getPokerValueWidgets(), _getActionButton()]);
+          children: [
+            Text('Choose your estimates', style: Theme.of(context).textTheme.headline6),
+            _getPokerCards(context),
+            Padding(padding: EdgeInsets.all(24)),
+            Text('Estimates', style: Theme.of(context).textTheme.headline6),
+            _getPokerValueWidgets(context),
+            _getActionButton(context)
+          ]);
     } else {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Text('Choose your estimates', style: Theme.of(context).textTheme.headline6),
             _getPokerCards(context),
-            _getPokerValueWidgets(),
+            Text('Estimates', style: Theme.of(context).textTheme.headline6),
+            _getPokerValueWidgets(context),
           ]);
     }
   }
 
-  Widget _getActionButton() {
+  Widget _getActionButton(BuildContext context) {
     if (estimate.revealed) {
       return Padding(
           padding: EdgeInsets.all(12.0),
-          child: ElevatedButton(onPressed: () => startEstimate(), child: Text('Start Estimate')));
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+              onPressed: () => startEstimate(),
+              child: Text(
+                'Start Another Estimate',
+              )));
     } else {
       return Padding(
-          padding: EdgeInsets.all(12.0), child: ElevatedButton(onPressed: () => reveal(), child: Text('Reveal')));
+          padding: EdgeInsets.all(12.0),
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+              onPressed: () => reveal(),
+              child: Text(
+                'Reveal',
+              )));
     }
   }
 
@@ -50,8 +72,8 @@ class EstimateWidget extends StatelessWidget {
             child: Padding(
                 padding: EdgeInsets.all(4.0),
                 child: TextButton(
-                  child: Text('$e', style: Theme.of(context).textTheme.button),
-                  onPressed: estimate.revealed ? () => {} : () => sendPokerValue(e),
+                  child: Text('$e', style: Theme.of(context).textTheme.headline3),
+                  onPressed: estimate.revealed ? null : () => sendPokerValue(e),
                 ))))
         .toList();
 
@@ -59,11 +81,21 @@ class EstimateWidget extends StatelessWidget {
         padding: EdgeInsets.all(12.0), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: widgets));
   }
 
-  Widget _getPokerValueWidgets() {
+  Widget _getPokerValueWidgets(BuildContext context) {
     final List<Widget> widgets = estimate.getPokerValues().map((e) {
       final pokerValue = estimate.revealed ? '$e' : 'X';
-      return Card(child: Padding(padding: EdgeInsets.all(4.0), child: Text(pokerValue)));
-    }).toList();
+      return Card(
+          color: Colors.white12,
+          child: Padding(
+              padding: EdgeInsets.all(12.0), child: Text(pokerValue, style: Theme.of(context).textTheme.headline4)));
+    }).toList(growable: true);
+    if (playerCount > estimate.getPokerValues().length) {
+      for (int i = 0; i < (playerCount - estimate.getPokerValues().length); i++) {
+        widgets.add(Card(
+            child: Padding(
+                padding: EdgeInsets.all(12.0), child: Text('?', style: Theme.of(context).textTheme.headline4))));
+      }
+    }
 
     return Padding(
         padding: EdgeInsets.all(12.0), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: widgets));
