@@ -1,11 +1,9 @@
 class Facilitator {
-  final String _id;
+  final String id;
 
-  Facilitator(this._id);
+  Facilitator({required this.id});
 
-  String get id => _id;
+  Facilitator.fromJson(Map<String, dynamic> json) : id = json['id'];
 
-  Facilitator.fromJson(Map<String, dynamic> json) : _id = json['id'];
-
-  Map<String, dynamic> toJson() => {'id': _id};
+  Map<String, dynamic> toJson() => {'id': id};
 }

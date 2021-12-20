@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:planning_poker/models/room.dart';
 import 'package:planning_poker/models/system.dart';
@@ -31,6 +33,7 @@ class _RoomPageState extends State<RoomPage> {
   dynamic _error;
   bool? _isFacilitator;
   Room? _room;
+  StreamSubscription<Room>? _roomSubscription;
 
   void _setData(Room room, bool isFacilitator) {
     setState(() {
@@ -50,13 +53,17 @@ class _RoomPageState extends State<RoomPage> {
   @override
   void initState() {
     super.initState();
-    System.instance.listenToRoomUpdates(widget.roomId).then(
-        (value) => {
-              value.listen((room) {
-                System.instance.isUserFacilitator(room).then((isFacilitator) => {_setData(room, isFacilitator)});
-              }, onError: (error) => _setError(error))
-            },
-        onError: (error) => {_setError(error)});
+    System.instance.joinRoomAsPlayer(roomNo: widget.roomId).then((room) {
+      _roomSubscription = System.instance.listenToRoomUpdates(roomNo: widget.roomId).listen((updatedRoom) {
+        System.instance.isUserFacilitator(room: room).then((isFacilitator) => _setData(room, isFacilitator));
+      }, onError: (error) => _setError(error));
+    }, onError: (error) => _setError(error));
+  }
+
+  @override
+  void dispose() {
+    _roomSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -103,8 +110,8 @@ class _RoomPageState extends State<RoomPage> {
       } else {
         if (_isFacilitator!) {
           return ElevatedButton(
-              onPressed: () {
-                _startEstimate();
+              onPressed: () => {
+                _startEstimate()
               },
               child: Text('Start Estimate'));
         } else {
@@ -124,6 +131,6 @@ class _RoomPageState extends State<RoomPage> {
   }
 
   _sendPokerValue(int value) {
-    System.instance.addPokerValueToCurrentEstimate(_room!, value);
+    System.instance.addPokerValueToCurrentEstimate(room: _room!, value: value);
   }
 }

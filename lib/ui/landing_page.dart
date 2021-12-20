@@ -50,7 +50,9 @@ class _LandingPageState extends State<LandingPage> {
 
   void _joinRoom(String roomNo) {
     _setLoading();
-    System.instance.joinRoomAsPlayer(roomNo).then((room) => {_setRoom(room)}, onError: (error) => _setError(error));
+    System.instance
+        .joinRoomAsPlayer(roomNo: roomNo)
+        .then((room) => {_setRoom(room)}, onError: (error) => _setError(error));
   }
 
   @override
@@ -116,9 +118,9 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   Padding(padding: EdgeInsets.all(12)),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () => {
                       if (_formKey.currentState!.validate()) {
-                        _joinRoom(_roomNoFieldController.value.text);
+                        _joinRoom(_roomNoFieldController.value.text)
                       }
                     },
                     child: Text('Join'),
@@ -132,9 +134,7 @@ class _LandingPageState extends State<LandingPage> {
               ),
               Padding(padding: EdgeInsets.all(12)),
               OutlinedButton.icon(
-                onPressed: () {
-                  _createRoom();
-                },
+                onPressed: () => {_createRoom()},
                 icon: Icon(Icons.add),
                 label: Text('Create Room'),
               ),

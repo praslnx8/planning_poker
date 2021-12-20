@@ -1,7 +1,5 @@
 class User {
-  final String _id;
+  final String id;
 
-  User(this._id);
-
-  String get id => _id;
+  User({required this.id});
 }

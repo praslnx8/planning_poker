@@ -1,5 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:planning_poker/models/player.dart';
+import 'package:planning_poker/adapters/dtos/room_dto.dart';
 
 class EstimateAdapter {
   static EstimateAdapter _instance = EstimateAdapter._();
@@ -8,64 +8,49 @@ class EstimateAdapter {
 
   EstimateAdapter._();
 
-  Future<void> addPokerValue(String roomNo, String estimateId, Player player, int value) async {
-    DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
-    await roomRef.runTransaction((Object? room) {
-      if (room == null) {
+  Future addPokerValue(
+      {required String roomNo, required String estimateId, required String playerId, required int value}) async {
+    DatabaseReference roomRef = FirebaseDatabase.instance.ref().child('rooms').child(roomNo);
+    return roomRef.runTransaction((Object? object) {
+      if (object == null) {
         return Transaction.abort();
       }
-      Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      Map<String, dynamic> _estimate = getEstimateFromRoom(_room, estimateId);
+      Map<String, dynamic> _room = Map<String, dynamic>.from(object as Map);
+      final room = RoomDTO.fromJson(_room);
+      final estimate = room.estimates.firstWhere((e) => e.id == estimateId);
+      estimate.playerPokerValues[playerId] = value;
 
-      final pokerValues =
-          _estimate['pokerValues'] != null ? (_estimate['pokerValues'] as List) : List.empty(growable: true);
-      final pokerValue = pokerValues.firstWhere(
-          (element) => element != null && element['player'] != null && element['player']['id'] == player.id,
-          orElse: () => null);
-      if (pokerValue != null) {
-        pokerValue['value'] = value;
-      } else {
-        pokerValues.add({'player': player.toJson(), 'value': value});
-      }
-      _estimate['pokerValues'] = pokerValues;
-
-      return Transaction.success(_room);
+      return Transaction.success(room.toJson());
     });
   }
 
-  Future<void> overRideEstimatedValue(String roomNo, String estimateId, int value) async {
-    DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
-    await roomRef.runTransaction((Object? room) {
-      if (room == null) {
+  Future overRideEstimatedValue({required String roomNo, required String estimateId, required int value}) async {
+    DatabaseReference roomRef = FirebaseDatabase.instance.ref().child('rooms').child(roomNo);
+    return roomRef.runTransaction((Object? object) {
+      if (object == null) {
         return Transaction.abort();
       }
-      Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      Map<String, dynamic> _estimate = getEstimateFromRoom(_room, estimateId);
+      Map<String, dynamic> _room = Map<String, dynamic>.from(object as Map);
+      final room = RoomDTO.fromJson(_room);
+      final estimate = room.estimates.firstWhere((e) => e.id == estimateId);
+      estimate.overRiddenEstimatedValue = value;
 
-      _estimate['overRideEstimatedValue'] = value;
-
-      return Transaction.success(_room);
+      return Transaction.success(room.toJson());
     });
   }
 
-  Future<void> reveal(String roomNo, String estimateId) async {
-    DatabaseReference roomRef = FirebaseDatabase.instance.ref('rooms').child(roomNo);
-    await roomRef.runTransaction((Object? room) {
-      if (room == null) {
+  Future reveal({required String roomNo, required String estimateId}) async {
+    DatabaseReference roomRef = FirebaseDatabase.instance.ref().child('rooms').child(roomNo);
+    return await roomRef.runTransaction((Object? object) {
+      if (object == null) {
         return Transaction.abort();
       }
-      Map<String, dynamic> _room = Map<String, dynamic>.from(room as Map);
-      Map<String, dynamic> _estimate = getEstimateFromRoom(_room, estimateId);
+      Map<String, dynamic> _room = Map<String, dynamic>.from(object as Map);
+      final room = RoomDTO.fromJson(_room);
+      final estimate = room.estimates.firstWhere((e) => e.id == estimateId);
+      estimate.revealed = true;
 
-      _estimate['reveal'] = true;
-
-      return Transaction.success(_room);
+      return Transaction.success(room.toJson());
     });
-  }
-
-  Map<String, dynamic> getEstimateFromRoom(Map<String, dynamic> _room, String estimateId) {
-    final estimates = (_room['estimates'] != null ? (_room['estimates'] as List) : List.empty(growable: true)).toSet();
-    final _estimate = estimates.firstWhere((element) => element['id'] == estimateId);
-    return _estimate;
   }
 }

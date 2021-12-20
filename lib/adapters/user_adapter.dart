@@ -19,6 +19,6 @@ class UserAdapter {
   }
 
   Future<String?> getCurrentUid() async {
-    return Future.value(FirebaseAuth.instance.currentUser?.uid);
+    return FirebaseAuth.instance.currentUser?.uid;
   }
 }

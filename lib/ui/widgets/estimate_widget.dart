@@ -21,41 +21,51 @@ class EstimateWidget extends StatelessWidget {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [_getPokerValueWidgets(), _getActionButton()]);
+          children: [_getPokerCards(context), _getPokerValueWidgets(), _getActionButton()]);
     } else {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [_getPokerValueWidgets(), _getPokerCards()]);
+          children: [
+            _getPokerCards(context),
+            _getPokerValueWidgets(),
+          ]);
     }
   }
 
   Widget _getActionButton() {
-    if (estimate.isRevealed) {
-      return ElevatedButton(onPressed: () => startEstimate(), child: Text('Start Estimate'));
+    if (estimate.revealed) {
+      return Padding(
+          padding: EdgeInsets.all(12.0),
+          child: ElevatedButton(onPressed: () => startEstimate(), child: Text('Start Estimate')));
     } else {
-      return ElevatedButton(onPressed: () => reveal(), child: Text('Reveal'));
+      return Padding(
+          padding: EdgeInsets.all(12.0), child: ElevatedButton(onPressed: () => reveal(), child: Text('Reveal')));
     }
   }
 
-  Widget _getPokerCards() {
+  Widget _getPokerCards(BuildContext context) {
     final List<Widget> widgets = [1, 2, 3, 5, 8]
         .map((e) => Card(
+            child: Padding(
+                padding: EdgeInsets.all(4.0),
                 child: TextButton(
-              child: Text('$e'),
-              onPressed: () => sendPokerValue(e),
-            )))
+                  child: Text('$e', style: Theme.of(context).textTheme.button),
+                  onPressed: estimate.revealed ? () => {} : () => sendPokerValue(e),
+                ))))
         .toList();
 
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: widgets);
+    return Padding(
+        padding: EdgeInsets.all(12.0), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: widgets));
   }
 
   Widget _getPokerValueWidgets() {
     final List<Widget> widgets = estimate.getPokerValues().map((e) {
-      final pokerValue = estimate.isRevealed ? '$e' : 'X';
-      return Card(child: Text(pokerValue));
+      final pokerValue = estimate.revealed ? '$e' : 'X';
+      return Card(child: Padding(padding: EdgeInsets.all(4.0), child: Text(pokerValue)));
     }).toList();
 
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: widgets);
+    return Padding(
+        padding: EdgeInsets.all(12.0), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: widgets));
   }
 }

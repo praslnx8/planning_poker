@@ -1,18 +1,16 @@
 class Player {
-  final String _id;
+  final String id;
 
-  Player(this._id);
+  Player({required this.id});
 
-  String get id => _id;
+  Player.fromJson(Map<String, dynamic> json) : id = json['id'];
 
-  Player.fromJson(Map<String, dynamic> json) : _id = json['id'];
-
-  Map<String, dynamic> toJson() => {'id': _id};
+  Map<String, dynamic> toJson() => {'id': id};
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Player && runtimeType == other.runtimeType && _id == other._id;
+      identical(this, other) || other is Player && runtimeType == other.runtimeType && id == other.id;
 
   @override
-  int get hashCode => _id.hashCode;
+  int get hashCode => id.hashCode;
 }

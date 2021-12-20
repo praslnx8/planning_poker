@@ -1,44 +1,48 @@
 import 'package:planning_poker/adapters/estimate_adapter.dart';
-import 'package:planning_poker/models/player.dart';
 
 class Estimate {
-  final String _id;
-  final String _roomNo;
-  final Map<Player, int> _pokerValueMap;
-  int? _overRideEstimatedValue;
-  bool _reveal = false;
+  final String id;
+  final String roomNo;
+  final Map<String, int> playerPokerValueMap;
+  int? overRiddenEstimatedValue;
+  bool revealed = false;
 
-  Estimate.init(this._id, this._roomNo) : _pokerValueMap = Map.identity();
+  Estimate.init({required this.id, required this.roomNo}) : playerPokerValueMap = Map.identity();
 
-  Estimate(this._id, this._roomNo, this._pokerValueMap, this._overRideEstimatedValue);
+  Estimate(
+      {required this.id,
+      required this.roomNo,
+      required this.playerPokerValueMap,
+      required this.overRiddenEstimatedValue,
+      required this.revealed});
 
-  Future<void> addPokerValue(Player player, int value) async {
-    _pokerValueMap[player] = value;
-    await EstimateAdapter.instance.addPokerValue(_roomNo, _id, player, value);
+  Future<void> addPokerValue(String playerId, int value) async {
+    playerPokerValueMap[playerId] = value;
+    await EstimateAdapter.instance.addPokerValue(roomNo: roomNo, estimateId: id, playerId: playerId, value: value);
   }
 
   List<int> getPokerValues() {
-    if (_reveal) {
-      return _pokerValueMap.entries.map((e) => e.value).toList();
+    if (revealed) {
+      return playerPokerValueMap.entries.map((e) => e.value).toList();
     } else {
-      return _pokerValueMap.entries.map((e) => 0).toList();
+      return playerPokerValueMap.entries.map((e) => 0).toList();
     }
   }
 
   /// Override the estimated value when conflict occurs with players.
   Future<void> overRideEstimatedValue(int value) {
-    _overRideEstimatedValue = value;
-    return EstimateAdapter.instance.overRideEstimatedValue(_roomNo, _id, value);
+    overRiddenEstimatedValue = value;
+    return EstimateAdapter.instance.overRideEstimatedValue(roomNo: roomNo, estimateId: id, value: value);
   }
 
   Future<void> reveal() {
-    _reveal = true;
-    return EstimateAdapter.instance.reveal(_roomNo, _id);
+    revealed = true;
+    return EstimateAdapter.instance.reveal(roomNo: roomNo, estimateId: id);
   }
 
   int getEstimatedValue() {
-    if (_overRideEstimatedValue != null) {
-      return _overRideEstimatedValue!;
+    if (overRiddenEstimatedValue != null) {
+      return overRiddenEstimatedValue!;
     }
     if (getPokerValues().isNotEmpty) {
       final totalEstimates = getPokerValues().reduce((value, element) => value + element);
@@ -46,24 +50,4 @@ class Estimate {
     }
     return 0;
   }
-
-  bool get isRevealed => _reveal;
-
-  Estimate.fromJson(Map<String, dynamic> json)
-      : _id = json['id'],
-        _roomNo = json['roomNo'],
-        _pokerValueMap = (json['pokerValues'] != null
-            ? Map.fromEntries(
-                (json['pokerValues'] as List).map((e) => MapEntry(Player.fromJson(e['player']), e['value'])))
-            : Map.identity()),
-        _overRideEstimatedValue = json['overRideEstimatedValue'],
-        _reveal = json['reveal'] != null ? json['reveal'] : false;
-
-  Map<String, dynamic> toJson() => {
-        'id': _id,
-        'roomNo': _roomNo,
-        'pokerValues': _pokerValueMap.entries.map((e) => {'player': e.key.toJson(), 'value': e.value}),
-        'overRideEstimatedValue': _overRideEstimatedValue,
-        'reveal': _reveal
-      };
 }
