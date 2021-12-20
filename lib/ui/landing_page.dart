@@ -108,7 +108,6 @@ class _LandingPageState extends State<LandingPage> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        icon: Icon(Icons.meeting_room),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(width: 5.0),
                         ),
@@ -119,11 +118,9 @@ class _LandingPageState extends State<LandingPage> {
                   Padding(padding: EdgeInsets.all(12)),
                   ElevatedButton(
                     onPressed: () => {
-                      if (_formKey.currentState!.validate()) {
-                        _joinRoom(_roomNoFieldController.value.text)
-                      }
+                      if (_formKey.currentState!.validate()) {_joinRoom(_roomNoFieldController.value.text)}
                     },
-                    child: Text('Join'),
+                    child: Text('Join Room'),
                   )
                 ],
               ),
