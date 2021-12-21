@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'app_router.dart';
 import 'configure_non_web.dart' if (dart.library.html) 'configure_web.dart';
 import 'firebase_options.dart';
+import 'models/system.dart';
 
 Future main() async {
   await dotenv.load(fileName: 'env');
@@ -13,6 +14,7 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   configureApp();
+  await System.instance.getUser();
   runApp(PlanningPokerApp());
 }
 
