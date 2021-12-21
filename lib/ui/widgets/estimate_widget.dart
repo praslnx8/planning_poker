@@ -49,7 +49,9 @@ class EstimateWidget extends StatelessWidget {
       return Padding(
           padding: EdgeInsets.all(12.0),
           child: ElevatedButton(
-              style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+              style: ButtonStyle(
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                  textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
               onPressed: () => startEstimate(),
               child: Text(
                 'Start Another Estimate',
@@ -58,7 +60,9 @@ class EstimateWidget extends StatelessWidget {
       return Padding(
           padding: EdgeInsets.all(12.0),
           child: ElevatedButton(
-              style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+              style: ButtonStyle(
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                  textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
               onPressed: () => reveal(),
               child: Text(
                 'Reveal',

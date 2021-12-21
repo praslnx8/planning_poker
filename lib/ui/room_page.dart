@@ -111,7 +111,12 @@ class _RoomPageState extends State<RoomPage> {
             reveal: _reveal);
       } else {
         if (_isFacilitator!) {
-          return ElevatedButton(onPressed: () => {_startEstimate()}, child: Text('Start Estimate'));
+          return ElevatedButton(
+              style: ButtonStyle(
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                  textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
+              onPressed: () => {_startEstimate()},
+              child: Text('Start Estimate'));
         } else {
           return Text('Waiting for facilitator to start');
         }

@@ -84,43 +84,40 @@ class _LandingPageState extends State<LandingPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Distributed scrum planning poker for estimating agile projects',
-                  style: Theme.of(context).textTheme.headline6),
+              Text('Planning poker for estimating agile stories', style: Theme.of(context).textTheme.headline6),
               Padding(padding: EdgeInsets.all(12)),
               Text(
-                  ' First person to create the room is the moderator. Share the url or room number with other team members to join the room.',
+                  'First person to create the room is the facilitator. \nShare the room number with other team members to join the room.',
                   style: Theme.of(context).textTheme.subtitle1),
-              Padding(padding: EdgeInsets.all(12)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    width: 240,
-                    child: TextFormField(
-                      controller: _roomNoFieldController,
-                      maxLength: 5,
-                      validator: (value) {
-                        if (value?.isEmpty == true) {
-                          return 'Enter Room no';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(width: 5.0),
-                        ),
-                        labelText: 'Enter Room no',
-                      ),
+              Padding(padding: EdgeInsets.all(24)),
+              SizedBox(
+                width: 240,
+                child: TextFormField(
+                  controller: _roomNoFieldController,
+                  maxLength: 5,
+                  validator: (value) {
+                    if (value?.isEmpty == true) {
+                      return 'Enter Room no';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(width: 5.0),
                     ),
+                    labelText: 'Enter Room no',
                   ),
-                  Padding(padding: EdgeInsets.all(12)),
-                  ElevatedButton(
-                    onPressed: () => {
-                      if (_formKey.currentState!.validate()) {_joinRoom(_roomNoFieldController.value.text)}
-                    },
-                    child: Text('Join Room'),
-                  )
-                ],
+                ),
+              ),
+              Padding(padding: EdgeInsets.all(12)),
+              ElevatedButton(
+                style: ButtonStyle(
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
+                onPressed: () => {
+                  if (_formKey.currentState!.validate()) {_joinRoom(_roomNoFieldController.value.text)}
+                },
+                child: Text('Join Room'),
               ),
               Padding(padding: EdgeInsets.all(12)),
               Text(
@@ -129,6 +126,9 @@ class _LandingPageState extends State<LandingPage> {
               ),
               Padding(padding: EdgeInsets.all(12)),
               OutlinedButton.icon(
+                style: ButtonStyle(
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
                 onPressed: () => {_createRoom()},
                 icon: Icon(Icons.add),
                 label: Text('Create Room'),
