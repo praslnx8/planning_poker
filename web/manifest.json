@@ -1,11 +1,11 @@
 {
-    "name": "planning_poker",
-    "short_name": "planning_poker",
+    "name": "Planning Poker - Agile Story Estimation tool",
+    "short_name": "Planning Poker",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Agile story estimation tool to estimate story points",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
