@@ -21,25 +21,44 @@ class EstimateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isFacilitator) {
       return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Choose your estimates', style: Theme.of(context).textTheme.headline6),
-            _getPokerCards(context),
             Padding(padding: EdgeInsets.all(24)),
-            Text('Estimates', style: Theme.of(context).textTheme.headline6),
-            _getPokerValueWidgets(context),
-            _getActionButton(context)
+            Column(
+              children: [
+                Text('Estimates', style: Theme.of(context).textTheme.headline6),
+                _getPokerValueWidgets(context),
+                _getActionButton(context),
+              ],
+            ),
+            Column(
+              children: [
+                Text('Choose your estimates', style: Theme.of(context).textTheme.headline6),
+                _getPokerCards(context),
+              ],
+            ),
+            Padding(padding: EdgeInsets.all(24)),
           ]);
     } else {
       return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Choose your estimates', style: Theme.of(context).textTheme.headline6),
-            _getPokerCards(context),
-            Text('Estimates', style: Theme.of(context).textTheme.headline6),
-            _getPokerValueWidgets(context),
+            Padding(padding: EdgeInsets.all(24)),
+            Column(
+              children: [
+                Text('Estimates', style: Theme.of(context).textTheme.headline6),
+                _getPokerValueWidgets(context),
+              ],
+            ),
+            Column(
+              children: [
+                Text('Choose your estimates', style: Theme.of(context).textTheme.headline6),
+                _getPokerCards(context),
+              ],
+            ),
+            Padding(padding: EdgeInsets.all(24)),
           ]);
     }
   }
@@ -72,13 +91,16 @@ class EstimateWidget extends StatelessWidget {
 
   Widget _getPokerCards(BuildContext context) {
     final List<Widget> widgets = [1, 2, 3, 5, 8]
-        .map((e) => Card(
-            child: Padding(
-                padding: EdgeInsets.all(4.0),
-                child: TextButton(
-                  child: Text('$e', style: Theme.of(context).textTheme.headline3),
+        .map(
+          (e) => Container(
+              margin: EdgeInsets.only(top: 10), // Top Margin
+              child: OutlinedButton(
+                  style: ButtonStyle(
+                      padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                      textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
                   onPressed: estimate.revealed ? null : () => sendPokerValue(e),
-                ))))
+                  child: Text('$e', style: Theme.of(context).textTheme.headline3))),
+        )
         .toList();
 
     return Padding(
