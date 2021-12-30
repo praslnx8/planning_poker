@@ -93,11 +93,8 @@ class EstimateWidget extends StatelessWidget {
     final List<Widget> widgets = [1, 2, 3, 5, 8]
         .map(
           (e) => Container(
-              margin: EdgeInsets.only(top: 10), // Top Margin
+              margin: EdgeInsets.all(10), // Top Margin
               child: OutlinedButton(
-                  style: ButtonStyle(
-                      padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                      textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
                   onPressed: estimate.revealed ? null : () => sendPokerValue(e),
                   child: Text('$e', style: Theme.of(context).textTheme.headline3))),
         )
