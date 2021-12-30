@@ -79,62 +79,76 @@ class _LandingPageState extends State<LandingPage> {
     if (_loading) {
       return CircularProgressIndicator();
     } else {
-      return Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Planning poker for estimating agile stories', style: Theme.of(context).textTheme.headline6),
-              Padding(padding: EdgeInsets.all(12)),
-              Text(
-                  'First person to create the room is the facilitator. \nShare the room number with other team members to join the room.',
-                  style: Theme.of(context).textTheme.subtitle1),
-              Padding(padding: EdgeInsets.all(24)),
-              SizedBox(
-                width: 240,
-                child: TextFormField(
-                  controller: _roomNoFieldController,
-                  maxLength: 5,
-                  validator: (value) {
-                    if (value?.isEmpty == true) {
-                      return 'Enter Room no';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(width: 5.0),
-                    ),
-                    labelText: 'Enter Room no',
-                  ),
-                ),
-              ),
-              Padding(padding: EdgeInsets.all(12)),
-              ElevatedButton(
-                style: ButtonStyle(
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
-                onPressed: () => {
-                  if (_formKey.currentState!.validate()) {_joinRoom(_roomNoFieldController.value.text)}
-                },
-                child: Text('Join Room'),
-              ),
-              Padding(padding: EdgeInsets.all(12)),
-              Text(
-                'or',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              Padding(padding: EdgeInsets.all(12)),
-              OutlinedButton.icon(
-                style: ButtonStyle(
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
-                onPressed: () => {_createRoom()},
-                icon: Icon(Icons.add),
-                label: Text('Create Room'),
-              ),
-            ],
-          ));
+      return Center(
+          child: Form(
+              key: _formKey,
+              child: SizedBox(
+                  width: 720,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Planning poker for estimating agile stories.',
+                            style: Theme.of(context).textTheme.headline6),
+                        Padding(padding: EdgeInsets.all(12)),
+                        Text(
+                            'First person to create the room is the facilitator. Share the room number with other team members to join the room.',
+                            style: Theme.of(context).textTheme.subtitle1),
+                        Padding(padding: EdgeInsets.all(24)),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 240,
+                                    child: TextFormField(
+                                      controller: _roomNoFieldController,
+                                      validator: (value) {
+                                        if (value?.isEmpty == true) {
+                                          return 'Enter Room no';
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(width: 5.0),
+                                        ),
+                                        labelText: 'Enter room no',
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(padding: EdgeInsets.all(12)),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                                        textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
+                                    onPressed: () => {
+                                      if (_formKey.currentState!.validate())
+                                        {_joinRoom(_roomNoFieldController.value.text)}
+                                    },
+                                    child: Text('Join room'),
+                                  ),
+                                ]),
+                            Padding(padding: EdgeInsets.all(12)),
+                            Text(
+                              'or',
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            Padding(padding: EdgeInsets.all(12)),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                                  textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
+                              onPressed: () => {_createRoom()},
+                              child: Text('Create new room'),
+                            ),
+                          ],
+                        )
+                      ]))));
     }
   }
 }
