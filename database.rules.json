@@ -1,6 +1,30 @@
 {
   "rules": {
-    ".read": "auth.uid != null",
-    ".write": "auth.uid != null"
+    ".read": "auth.uid !== null",
+    ".write": "auth.uid !== null",
+    "roomIdPool": {
+      ".read": "auth.uid !== null",
+      ".write": "auth.uid !== null"
+    },
+    "rooms": {
+      ".read": "auth.uid !== null",
+      ".write": "auth.uid !== null",
+      "estimates": {
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid !== null",
+        "playerPokerValues": {
+          ".read": "auth.uid !== null",
+          ".write": "auth.uid !== null"
+        },
+      },
+      "facilitator": {
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid !== null"
+      },
+      "players": {
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid !== null"
+      }
+    }
   }
 }

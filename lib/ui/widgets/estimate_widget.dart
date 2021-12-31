@@ -154,7 +154,7 @@ class _EstimateWidgetState extends State<EstimateWidget> {
     }
 
     return Container(
-        color: Colors.lightBlueAccent,
+        color: Colors.white70,
         padding: EdgeInsets.all(12.0),
         margin: EdgeInsets.all(12.0),
         child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: widgets));
