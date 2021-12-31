@@ -34,6 +34,7 @@ class _RoomPageState extends State<RoomPage> {
   bool? _isFacilitator;
   Room? _room;
   StreamSubscription<Room>? _roomSubscription;
+  final _estimateDescFieldController = TextEditingController();
 
   void _setData(Room room, bool isFacilitator) {
     setState(() {
@@ -111,12 +112,30 @@ class _RoomPageState extends State<RoomPage> {
             reveal: _reveal);
       } else {
         if (_isFacilitator!) {
-          return ElevatedButton(
-              style: ButtonStyle(
-                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                  textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
-              onPressed: () => {_startEstimate()},
-              child: Text('Start Estimate'));
+          return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 240,
+                  child: TextFormField(
+                    controller: _estimateDescFieldController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 5.0),
+                      ),
+                      labelText: 'Story ID(Optional)',
+                    ),
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(12)),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                        textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
+                    onPressed: () => {_startEstimate(_estimateDescFieldController.value.text)},
+                    child: Text('Start Estimate'))
+              ]);
         } else {
           return Text('Waiting for facilitator to start');
         }
@@ -125,8 +144,8 @@ class _RoomPageState extends State<RoomPage> {
     return CircularProgressIndicator();
   }
 
-  _startEstimate() {
-    _room!.startEstimate();
+  _startEstimate(String? desc) {
+    _room!.startEstimate(desc: desc);
   }
 
   _reveal() {

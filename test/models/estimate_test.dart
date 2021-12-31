@@ -9,6 +9,7 @@ void main() {
     Estimate estimate = new Estimate(
         id: 'id',
         roomNo: 'roomNo',
+        desc: 'desc',
         playerPokerValueMap: playerPokerValueMap,
         overRiddenEstimatedValue: null,
         revealed: true);
@@ -19,6 +20,7 @@ void main() {
     Estimate estimate = new Estimate(
         id: 'id',
         roomNo: 'roomNo',
+        desc: 'desc',
         playerPokerValueMap: Map.identity(),
         overRiddenEstimatedValue: null,
         revealed: true);

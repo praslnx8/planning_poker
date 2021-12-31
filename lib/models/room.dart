@@ -22,8 +22,8 @@ class Room {
     return RoomAdapter.instance.addPlayer(roomNo: id, player: PlayerDTO.from(player));
   }
 
-  Future<Estimate> startEstimate() async {
-    final estimate = Estimate.init(id: '${estimates.length}', roomNo: id);
+  Future<Estimate> startEstimate({String? desc}) async {
+    final estimate = Estimate.init(id: '${estimates.length}', roomNo: id, desc: desc);
     estimates.add(estimate);
     await RoomAdapter.instance.addEstimate(id, EstimateDTO.from(estimate));
     return Future.value(estimate);

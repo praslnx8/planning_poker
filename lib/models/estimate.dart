@@ -3,15 +3,17 @@ import 'package:planning_poker/adapters/estimate_adapter.dart';
 class Estimate {
   final String id;
   final String roomNo;
+  final String? desc;
   final Map<String, int> playerPokerValueMap;
   int? overRiddenEstimatedValue;
   bool revealed = false;
 
-  Estimate.init({required this.id, required this.roomNo}) : playerPokerValueMap = Map.identity();
+  Estimate.init({required this.id, required this.roomNo, required this.desc}) : playerPokerValueMap = Map.identity();
 
   Estimate(
       {required this.id,
       required this.roomNo,
+      required this.desc,
       required this.playerPokerValueMap,
       required this.overRiddenEstimatedValue,
       required this.revealed});

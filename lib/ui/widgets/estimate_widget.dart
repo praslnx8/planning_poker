@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planning_poker/models/estimate.dart';
 
-class EstimateWidget extends StatelessWidget {
+class EstimateWidget extends StatefulWidget {
   final Estimate estimate;
   final bool isFacilitator;
   final int playerCount;
@@ -18,8 +18,15 @@ class EstimateWidget extends StatelessWidget {
       required this.reveal});
 
   @override
+  _EstimateWidgetState createState() => _EstimateWidgetState();
+}
+
+class _EstimateWidgetState extends State<EstimateWidget> {
+  final _estimateDescFieldController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    if (isFacilitator) {
+    if (widget.isFacilitator) {
       return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,7 +34,7 @@ class EstimateWidget extends StatelessWidget {
             Padding(padding: EdgeInsets.all(24)),
             Column(
               children: [
-                Text('Estimates', style: Theme.of(context).textTheme.headline6),
+                _getEstimateTextWidget(context),
                 _getPokerValueWidgets(context),
                 _getActionButton(context),
               ],
@@ -48,7 +55,7 @@ class EstimateWidget extends StatelessWidget {
             Padding(padding: EdgeInsets.all(24)),
             Column(
               children: [
-                Text('Estimates', style: Theme.of(context).textTheme.headline6),
+                _getEstimateTextWidget(context),
                 _getPokerValueWidgets(context),
               ],
             ),
@@ -64,17 +71,33 @@ class EstimateWidget extends StatelessWidget {
   }
 
   Widget _getActionButton(BuildContext context) {
-    if (estimate.revealed) {
-      return Padding(
-          padding: EdgeInsets.all(12.0),
-          child: ElevatedButton(
-              style: ButtonStyle(
-                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                  textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
-              onPressed: () => startEstimate(),
-              child: Text(
-                'Start Another Estimate',
-              )));
+    if (widget.estimate.revealed) {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 240,
+              child: TextFormField(
+                controller: _estimateDescFieldController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(width: 5.0),
+                  ),
+                  labelText: 'Story ID(Optional)',
+                ),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(12)),
+            ElevatedButton(
+                style: ButtonStyle(
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
+                onPressed: () => widget.startEstimate(_estimateDescFieldController.value.text),
+                child: Text(
+                  'Start Another Estimate',
+                ))
+          ]);
     } else {
       return Padding(
           padding: EdgeInsets.all(12.0),
@@ -82,11 +105,18 @@ class EstimateWidget extends StatelessWidget {
               style: ButtonStyle(
                   padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
                   textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
-              onPressed: () => reveal(),
+              onPressed: () => widget.reveal(),
               child: Text(
                 'Reveal',
               )));
     }
+  }
+
+  Widget _getEstimateTextWidget(BuildContext context) {
+    final estimateTextContent = widget.estimate.desc != null && widget.estimate.desc!.isNotEmpty
+        ? 'Estimates for ${widget.estimate.desc!}'
+        : 'Estimates';
+    return Text(estimateTextContent, style: Theme.of(context).textTheme.headline6);
   }
 
   Widget _getPokerCards(BuildContext context) {
@@ -95,7 +125,7 @@ class EstimateWidget extends StatelessWidget {
           (e) => Container(
               margin: EdgeInsets.all(10), // Top Margin
               child: OutlinedButton(
-                  onPressed: estimate.revealed ? null : () => sendPokerValue(e),
+                  onPressed: widget.estimate.revealed ? null : () => widget.sendPokerValue(e),
                   child: Text('$e', style: Theme.of(context).textTheme.headline3))),
         )
         .toList();
@@ -105,22 +135,28 @@ class EstimateWidget extends StatelessWidget {
   }
 
   Widget _getPokerValueWidgets(BuildContext context) {
-    final List<Widget> widgets = estimate.getPokerValues().map((e) {
-      final pokerValue = estimate.revealed ? '$e' : 'X';
+    final colorCode = widget.estimate.revealed ? Colors.white : Colors.white60;
+    final alternateColorCode = widget.estimate.revealed ? Colors.white60 : Colors.white;
+    final List<Widget> widgets = widget.estimate.getPokerValues().map((e) {
+      final pokerValue = widget.estimate.revealed ? '$e' : 'X';
       return Card(
-          color: Colors.white12,
+          color: colorCode,
           child: Padding(
               padding: EdgeInsets.all(12.0), child: Text(pokerValue, style: Theme.of(context).textTheme.headline4)));
     }).toList(growable: true);
-    if (playerCount > estimate.getPokerValues().length) {
-      for (int i = 0; i < (playerCount - estimate.getPokerValues().length); i++) {
+    if (widget.playerCount > widget.estimate.getPokerValues().length) {
+      for (int i = 0; i < (widget.playerCount - widget.estimate.getPokerValues().length); i++) {
         widgets.add(Card(
+            color: alternateColorCode,
             child: Padding(
                 padding: EdgeInsets.all(12.0), child: Text('?', style: Theme.of(context).textTheme.headline4))));
       }
     }
 
-    return Padding(
-        padding: EdgeInsets.all(12.0), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: widgets));
+    return Container(
+        color: Colors.lightBlueAccent,
+        padding: EdgeInsets.all(12.0),
+        margin: EdgeInsets.all(12.0),
+        child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: widgets));
   }
 }
