@@ -26,90 +26,56 @@ class _EstimateWidgetState extends State<EstimateWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.isFacilitator) {
-      return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(padding: EdgeInsets.all(24)),
-            Column(
-              children: [
-                _getEstimateTextWidget(context),
-                _getPokerValueWidgets(context),
-                _getActionButton(context),
-              ],
-            ),
-            Column(
-              children: [
-                Text('Choose your estimates', style: Theme.of(context).textTheme.headline6),
-                _getPokerCards(context),
-              ],
-            ),
-            Padding(padding: EdgeInsets.all(24)),
-          ]);
-    } else {
-      return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(padding: EdgeInsets.all(24)),
-            Column(
-              children: [
-                _getEstimateTextWidget(context),
-                _getPokerValueWidgets(context),
-              ],
-            ),
-            Column(
-              children: [
-                Text('Choose your estimates', style: Theme.of(context).textTheme.headline6),
-                _getPokerCards(context),
-              ],
-            ),
-            Padding(padding: EdgeInsets.all(24)),
-          ]);
-    }
-  }
+    final widgets = List<Widget>.empty(growable: true);
+    widgets.add(Column(
+      children: [
+        _getEstimateTextWidget(context),
+        _getPokerValueWidgets(context),
+      ],
+    ));
 
-  Widget _getActionButton(BuildContext context) {
     if (widget.estimate.revealed) {
-      return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 240,
-              child: TextFormField(
-                controller: _estimateDescFieldController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(width: 5.0),
+      if (widget.isFacilitator) {
+        widgets.add(Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 240,
+                child: TextFormField(
+                  controller: _estimateDescFieldController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(width: 5.0),
+                    ),
+                    labelText: 'Story ID(Optional)',
                   ),
-                  labelText: 'Story ID(Optional)',
                 ),
               ),
-            ),
-            Padding(padding: EdgeInsets.all(12)),
-            ElevatedButton(
-                style: ButtonStyle(
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
-                onPressed: () => widget.startEstimate(_estimateDescFieldController.value.text),
-                child: Text(
-                  'Start Another Estimate',
-                ))
-          ]);
+              Padding(padding: EdgeInsets.all(12)),
+              ElevatedButton(
+                  style: ButtonStyle(
+                      padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                      textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
+                  onPressed: () => widget.startEstimate(_estimateDescFieldController.value.text),
+                  child: Text(
+                    'Start Another Estimate',
+                  ))
+            ]));
+      }
     } else {
-      return Padding(
-          padding: EdgeInsets.all(12.0),
-          child: ElevatedButton(
-              style: ButtonStyle(
-                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                  textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
-              onPressed: () => widget.reveal(),
-              child: Text(
-                'Reveal',
-              )));
+      widgets.add(Column(
+        children: [
+          Text('Choose your estimates', style: Theme.of(context).textTheme.headline6),
+          _getPokerCards(context),
+        ],
+      ));
     }
+
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: widgets);
   }
 
   Widget _getEstimateTextWidget(BuildContext context) {
@@ -137,7 +103,7 @@ class _EstimateWidgetState extends State<EstimateWidget> {
   Widget _getPokerValueWidgets(BuildContext context) {
     final colorCode = widget.estimate.revealed ? Colors.white : Colors.white60;
     final alternateColorCode = widget.estimate.revealed ? Colors.white60 : Colors.white;
-    final List<Widget> widgets = widget.estimate.getPokerValues().map((e) {
+    final List<Widget> pokerValueWidgets = widget.estimate.getPokerValues().map((e) {
       final pokerValue = widget.estimate.revealed ? '$e' : 'X';
       return Card(
           color: colorCode,
@@ -146,17 +112,31 @@ class _EstimateWidgetState extends State<EstimateWidget> {
     }).toList(growable: true);
     if (widget.playerCount > widget.estimate.getPokerValues().length) {
       for (int i = 0; i < (widget.playerCount - widget.estimate.getPokerValues().length); i++) {
-        widgets.add(Card(
+        pokerValueWidgets.add(Card(
             color: alternateColorCode,
             child: Padding(
                 padding: EdgeInsets.all(12.0), child: Text('?', style: Theme.of(context).textTheme.headline4))));
       }
     }
 
-    return Container(
+    final widgets = List<Widget>.empty(growable: true);
+    widgets.add(Container(
         color: Colors.white70,
         padding: EdgeInsets.all(12.0),
         margin: EdgeInsets.all(12.0),
-        child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: widgets));
+        child: Row(
+            mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: pokerValueWidgets)));
+    if (widget.isFacilitator && !widget.estimate.revealed) {
+      widgets.add(ElevatedButton(
+          style: ButtonStyle(
+              padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+              textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
+          onPressed: () => widget.reveal(),
+          child: Text(
+            'Reveal',
+          )));
+    }
+
+    return Column(children: widgets);
   }
 }
