@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:planning_poker/models/room.dart';
 import 'package:planning_poker/models/system.dart';
 import 'package:planning_poker/ui/room_page.dart';
+import 'package:planning_poker/ui/widgets/join_room_widget.dart';
+import 'package:planning_poker/utils/app_context_extension.dart';
 import 'package:planning_poker/utils/dialog_utils.dart';
 
 class LandingPage extends StatefulWidget {
@@ -15,9 +17,6 @@ class _LandingPageState extends State<LandingPage> {
   bool _loading = false;
   String? _error;
   Room? _room;
-
-  final _formKey = GlobalKey<FormState>();
-  final _roomNoFieldController = TextEditingController();
 
   void _setLoading() {
     setState(() {
@@ -80,75 +79,31 @@ class _LandingPageState extends State<LandingPage> {
       return CircularProgressIndicator();
     } else {
       return Center(
-          child: Form(
-              key: _formKey,
-              child: SizedBox(
-                  width: 720,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text('Planning poker for estimating agile stories.',
-                            style: Theme.of(context).textTheme.headline6),
-                        Padding(padding: EdgeInsets.all(12)),
-                        Text(
-                            'First person to create the room is the facilitator. Share the room number with other team members to join the room.',
-                            style: Theme.of(context).textTheme.subtitle1),
-                        Padding(padding: EdgeInsets.all(24)),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 240,
-                                    child: TextFormField(
-                                      controller: _roomNoFieldController,
-                                      validator: (value) {
-                                        if (value?.isEmpty == true) {
-                                          return 'Enter Room no';
-                                        }
-                                        return null;
-                                      },
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderSide: BorderSide(width: 5.0),
-                                        ),
-                                        labelText: 'Enter room no',
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(padding: EdgeInsets.all(12)),
-                                  ElevatedButton(
-                                    style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                                        textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
-                                    onPressed: () => {
-                                      if (_formKey.currentState!.validate())
-                                        {_joinRoom(_roomNoFieldController.value.text)}
-                                    },
-                                    child: Text('Join room'),
-                                  ),
-                                ]),
-                            Padding(padding: EdgeInsets.all(12)),
-                            Text(
-                              'or',
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
-                            Padding(padding: EdgeInsets.all(12)),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                                  textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
-                              onPressed: () => {_createRoom()},
-                              child: Text('Create new room'),
-                            ),
-                          ],
-                        )
-                      ]))));
+          child: SizedBox(
+              width: 720,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(context.resources.strings.aboutPlanningPoker, style: Theme.of(context).textTheme.headline6),
+                    Padding(padding: EdgeInsets.all(12)),
+                    Text(context.resources.strings.roomCreateInstruction, style: Theme.of(context).textTheme.subtitle1),
+                    Padding(padding: EdgeInsets.all(24)),
+                    JoinRoomWidget(joinRoom: _joinRoom),
+                    Padding(padding: EdgeInsets.all(8)),
+                    Text(
+                      context.resources.strings.or,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    Padding(padding: EdgeInsets.all(8)),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                          padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                          textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20))),
+                      onPressed: () => {_createRoom()},
+                      child: Text(context.resources.strings.createNewRoom),
+                    )
+                  ])));
     }
   }
 }

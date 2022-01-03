@@ -14,6 +14,7 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   configureApp();
+  //TODO check and remove this
   await System.instance.getUser();
   runApp(PlanningPokerApp());
 }
