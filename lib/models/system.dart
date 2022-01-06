@@ -76,4 +76,8 @@ class System {
     final user = await getUser();
     return Future.value(room.facilitator.id == user.id);
   }
+
+  bool isLoggedIn() {
+    return UserAdapter.instance.getCurrentUid() != null;
+  }
 }

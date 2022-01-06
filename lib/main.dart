@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:planning_poker/models/system.dart';
+import 'package:planning_poker/ui/login_page.dart';
 
 import 'app_router.dart';
 import 'configure_non_web.dart' if (dart.library.html) 'configure_web.dart';
@@ -25,9 +27,12 @@ class PlanningPokerApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
+        initialRoute: System.instance.isLoggedIn() ? "/" : LoginPage.createRoute('/'),
         onGenerateRoute: (settings) => MaterialPageRoute(
             settings: RouteSettings(name: settings.name, arguments: settings.arguments),
             maintainState: true,
-            builder: (context) => AppRouter.route(settings.name!)));
+            builder: (context) => AppRouter.route(settings.name!)),
+        onGenerateInitialRoutes: (route) =>
+            [MaterialPageRoute(maintainState: true, builder: (context) => AppRouter.route(route))]);
   }
 }

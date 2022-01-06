@@ -9,6 +9,11 @@ import 'package:planning_poker/utils/dialog_utils.dart';
 class LandingPage extends StatefulWidget {
   LandingPage({Key? key}) : super(key: key);
 
+  static bool isMatchingPath(String path) {
+    var uri = Uri.parse(path);
+    return uri.pathSegments.length == 0;
+  }
+
   @override
   _LandingPageState createState() => _LandingPageState();
 }
